@@ -39,7 +39,7 @@ Your score is locally saved along with the time and the highest number you reach
 ## Notes
 > [!WARNING]
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
-> In `the2048game.py` go to the constants section and change the `DIRECTORY`.
+> In [`__main__.py`](__main__.py "__main__") go to the `constants` section and change the first part of `DIRECTORY`.
 
 ## License
 This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE](LICENSE "LICENSE file")
