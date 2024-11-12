@@ -37,7 +37,7 @@ On Windows you can install the executable from releases. The executable is only 
 Your score is locally saved along with the time and the highest number you reached.
 
 ## License
-This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE.md](LICENSE.md "LICENSE file")
+This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE](LICENSE "LICENSE file")
 
 ## Credit and Thanks
 
