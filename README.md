@@ -36,6 +36,11 @@ On Windows you can install the executable from releases. The executable is only 
 ## High Score
 Your score is locally saved along with the time and the highest number you reached.
 
+## Notes
+> [!WARNING]
+> If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
+> In `the2048game.py` go to the constants section and change the `DIRECTORY`.
+
 ## License
 This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE](LICENSE "LICENSE file")
 
