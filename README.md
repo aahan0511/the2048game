@@ -35,7 +35,6 @@ On Windows you can install the executable from releases. The executable is only 
 
 ## High Score
 Your score is locally saved along with the time and the highest number you reached.
-> The highscore is shown on your screen.
 
 ## License
 This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE.md](LICENSE.md "LICENSE file")
