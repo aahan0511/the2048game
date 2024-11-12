@@ -27,7 +27,7 @@ This also requires all the needed modules, for which you need to do
 
 This will install all needed modules and libraries.
 
-> [! TIP]
+> [!TIP]
 > You might even need to edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
 
 ### Executable
