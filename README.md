@@ -36,6 +36,9 @@ On Windows you can install the executable from releases. The executable is only 
 ## High Score
 Your score is locally saved along with the time and the highest number you reached.
 
+## Font
+The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono "JetBrainsMono on GitHub"). I have peronally used [JetBrains Mono Medium](JetBrainsMono-Medium.ttf), which is available in the repository. You can change the font in the `constants` section.
+
 ## Notes
 > [!WARNING]
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
