@@ -3,7 +3,7 @@ This is the Python version for 2048 by Gabriele Cirulli.
 
 ## Status
 > [!NOTE]
-> This project is in development. Do not try to run it.
+> This project is in development.
 
 ## [2048](https://github.com/gabrielecirulli/2048 "2048 on GitHub")
 The original 2048 was made by [Gabriele Cirulli](https://github.com/gabrielecirulli "Gabriele Cirulli's GitHub") in JavaScript and CSS. If you want to play the actual game: [`play2048.co`](https://play2048.co/ "2048 website"). 
