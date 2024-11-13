@@ -23,7 +23,9 @@ If you have never played 2048 before here is the rules of 2048:
 This requires `Python 3.10+`, atleast that's what I think.
 
 This also requires all the [needed modules](requirements.txt requirements), for which you need to do 
-> ```pip install -r requirements.txt```
+> ```bash[]
+pip install -r requirements.txt
+```
 
 This will install all needed modules and libraries.
 
