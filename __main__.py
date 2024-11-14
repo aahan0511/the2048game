@@ -44,7 +44,7 @@ class App(CTk):
     def __init__(root):
         # ======= window setup ======= #
         super().__init__("#faf8f0")
-        root.geometry("600x700+50+50")
+        root.geometry("726x700+50+50")
         root.resizable(False, False)
 
         root.bind("<Any-KeyPress>", root.keyPress)
@@ -98,6 +98,7 @@ class App(CTk):
 
         # ======= gui ======= #
         root.header = Header(root, root.scoreVar, root.highVar, icon)
+        root.side = Side(root)
         root.game = GameScreen(root)
         # ======= --- ======= #
 
@@ -222,7 +223,7 @@ class Header(CTkFrame):
         # ======= --- ======= #
 
         # ======= place ======= #
-        header.place(relx=0.5, y=60, anchor="center")
+        header.place(x=426, y=60, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
 # ======= ------ ======= #
@@ -293,6 +294,65 @@ class Score(CTkFrame):
     # ======= ---- ======= #
 # ======= ----- --- ======= #
 
+# ======= side box ======= #
+class Side(CTkFrame):
+
+    # ======= init ======= #
+    def __init__(side, master):
+        # ======= setup ======= #
+        super().__init__(
+            master,
+            fg_color="#bdac97",
+            border_color="#9c8978",
+            border_width=5,
+            corner_radius=35,
+            width=100, 
+            height=667, 
+        )
+        # ======= ----- ======= #
+
+        # ======= grid setup ======= #
+        side.columnconfigure(0, weight=1, uniform="a")
+        side.rowconfigure((0, 1), weight=1, uniform="a")
+        side.grid_propagate(False)
+        # ======= ---- ----- ======= #
+
+        # ======= gui ======= #
+        side.play = CTkButton(
+            side, 
+            text="P\nL\nA\nY", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=master.start
+        )
+        side.play.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
+        
+        side.end = CTkButton(
+            side, 
+            text="E\nN\nD", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=master.restart
+        )
+        side.end.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
+        # ======= --- ======= #
+
+        # ======= place ======= #
+        side.place(x=72.5, y=344, anchor="center")
+        # ======= ----- ======= #
+    # ======= ---- ======= #
+# ======= ---- --- ======= #
+
 # ======= game screen ======= #
 class GameScreen(CTkFrame):
 
@@ -336,7 +396,7 @@ class GameScreen(CTkFrame):
         # ======= ---- ------ ======= #
 
         # ======= place ======= #
-        screen.place(relx=0.5, y=400, anchor="center")
+        screen.place(x=426, y=400, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
 # ======= ---- ------ ======= #

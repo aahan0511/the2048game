@@ -13,6 +13,8 @@ I am attempting to make the same game in Python.
 ## How To Play
 If you have never played 2048 before here is the rules of 2048:
 
+> You start with either pressing `space bar` or the PLAY button.
+
 > You have a 4x4 grid, in which there 2 blocks in the start, you have 90% chance of haing an 2, while 10% chance of having an 4 in the start.
 
 > You can either play UP (⬆️), DOWN (⬇️), LEFT (⬅️), or RIGHT (➡️). Each of them will result all the blocks sliding in that direction. And the blocks having the same numbers will merge, making a block that is the sum of the merged blocks.
@@ -20,6 +22,8 @@ If you have never played 2048 before here is the rules of 2048:
 > You win when you reach 2048.
 
 > The game ends when you have no empty spaces left and also no moves left.
+
+> You may even press the END button, or `esc` to clear the game, and save your score.
 
 ## Installation
 
