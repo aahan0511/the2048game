@@ -39,7 +39,10 @@ This will install all needed modules and libraries.
 > You might even need to edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
 
 ### Executable (not ready)
-On Windows you can install the executable from releases. The executable is only compatible with Windows currently, and is quite slow because it is made with `PyInstaller`. If you have any suggestions, put them in [this discussion](https://github.com/aahan0511/the2048game/discussions/2 "Ideas Discussion").
+On Windows you can install the executable from releases. The executable is only compatible with Windows currently.
+
+> [!NOTE]
+> It is quite slow because it is made with `PyInstaller`. If you have any suggestions, put them in [this discussion](https://github.com/aahan0511/the2048game/discussions/2 "Ideas Discussion").
 
 ## High Score
 Your score is locally saved along with the time and the highest number you reached.
