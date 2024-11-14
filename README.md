@@ -56,7 +56,30 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section and change the first part of `DIRECTORY`.
 
 ## License
-This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License), as [LICENSE](LICENSE.txt "LICENSE file")
+This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License),
+> MIT License
+
+> Copyright (c) 2024 Aahan Salecha
+
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+> The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+as [LICENSE](LICENSE.txt "LICENSE file")
 
 ## Credit and Thanks
 
