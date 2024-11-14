@@ -19,6 +19,7 @@ PATHS = {
     "icon" : f"{path[0]}\\images\\icon.png"
 }
 FONT = "JetBrains Mono Medium"
+SPEED = 5
 # ======= --------- ======= #
 
 # ======= variables ======= #
@@ -466,18 +467,49 @@ class Block:
     # ======= --- ======= #
 
     # ======= slide ======= #
-    def slide(block):
-        pass #TODO: make a slide function
+    def slide(block, direction):
+        if direction == "left" and block.pos%4 != 0:
+            final = block.x - 136.25 
+            def left():
+                block.x -= 136.25/SPEED
+                block.place()
+                if block.x != final:
+                    left()
+            left()
+        elif direction == "right" and block.pos%4 != 3:
+            final = block.x + 136.25 
+            def right():
+                block.x += 136.25/SPEED
+                block.place()
+                if block.x != final:
+                    right()
+            right()
+        elif direction == "up" and block.pos//4 != 0:
+            final = block.y + 136.25 
+            def up():
+                block.y += 136.25/SPEED
+                block.place()
+                if block.y != final:
+                    up()
+            up()
+        elif direction == "down" and block.pos//4 != 3:
+            final = block.y + 136.25 
+            def down():
+                block.y += 136.25/SPEED
+                block.place()
+                if block.y != final:
+                    down()
+            down()
     # ======= ----- ======= #
 
     # ======= merge ======= #           
-    def merge(self, direction):
-        pass #TODO: make a merge function
+    def merge(self):
+        pass #TODO: add merge function
     # ======= ----- ======= #
 # ======= ----- ======= #
 
 # ======= main code ======= #
 if __name__ == "__main__":
-    App()
+    app = App()
     conn.close()
 # ======= ---- ---- ======= #
