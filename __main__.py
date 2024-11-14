@@ -6,6 +6,8 @@ from sys import path
 from _tkinter import TclError
 from PIL import Image, ImageTk
 from random import randint, choice
+from tkinter import messagebox
+from ttkbootstrap.toast import ToastNotification
 # ======= ------- ======= #
 
 # ======= constants ======= #
@@ -23,6 +25,7 @@ FONT = "JetBrains Mono Medium"
 # ======= variables ======= #
 grid = [None]*16
 matrix = [0]*16
+ongoing = False
 # ======= --------- ======= #
 
 # ======= directory and database creation ======= #
@@ -31,7 +34,7 @@ if not osPath.exists(DIRECTORY): makedirs(DIRECTORY)
 conn = connect(f"{DIRECTORY}\\2048.db")
 cursor = conn.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Name TEXT, Score INTEGER, Block INTEGER)")
+cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER)")
 # ======= --------- --- -------- -------- ======= #
 
 # ======= window ======= #
@@ -43,6 +46,10 @@ class App(CTk):
         super().__init__("#faf8f0")
         root.geometry("600x700+50+50")
         root.resizable(False, False)
+
+        root.bind("<Any-KeyPress>", root.keyPress)
+        root.bind("<space>", root.start)
+        root.bind("<Escape>", root.restart)
         # ======= ------ ----- ======= #
 
         # ======= empty title bar ======= #
@@ -66,6 +73,27 @@ class App(CTk):
         root.scoreVar = IntVar(master=root, value=0)
         root.highVar = IntVar(master=root, value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
         icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
+
+        root.winToast  = ToastNotification(
+            "You Won!!!", 
+            "You got 2048.", 
+            2000, 
+            "success", 
+            False, 
+            "🥳", 
+            "JetBrains Mono Medium", 
+            position=(50, 50, "se")
+        )
+        root.lossToast  = ToastNotification(
+            "You Lost...", 
+            "You have no possible moves left..", 
+            2000, 
+            "danger", 
+            False, 
+            "😔", 
+            "JetBrains Mono Medium", 
+            position=(50, 50, "se")
+        )
         # ======= --------- ======= # 
 
         # ======= gui ======= #
@@ -77,6 +105,76 @@ class App(CTk):
         root.mainloop()
         # ======= -------- ======= #
     # ======= ---- ======= #
+
+    # ======= key press ======= #
+    def keyPress(root, event):
+        global movement
+        movement = False
+        key = event.keysym
+        if key == "Left" or key == "a":
+            for cell in grid:
+                if cell != None:
+                    cell.merge("left")
+        if key == "Right" or key == "d":
+            for cell in grid[::-1]:
+                if cell != None:
+                    cell.merge("right")
+        if key == "Up" or key == "w":
+            tempGrid = grid[::4]+grid[1::4]+grid[2::4]+grid[3::4]
+            for cell in tempGrid:
+                if cell != None:
+                    cell.merge("up")
+        if key == "Down" or key == "s":
+            tempGrid = grid[::4][::-1]+grid[1::4][::-1]+grid[2::4][::-1]+grid[3::4][::-1]
+            for cell in tempGrid:
+                if cell != None:
+                    cell.merge("down")
+        if movement:
+            Block(root.game).place()
+        if matrix.count(0) == 0:
+            matching = False
+            for cell in grid:
+                if cell.pos%4 != 0:
+                    if grid[cell.pos-1].power == cell.power:
+                        matching = True
+                if cell.pos%4 != 3:
+                    if grid[cell.pos+1].power == cell.power:
+                        matching = True
+                if cell.pos//4 != 0:
+                    if grid[cell.pos-4].power == cell.power:
+                        matching = True
+                if cell.pos//4 != 3:
+                    if grid[cell.pos+4].power == cell.power:
+                        matching = True
+            if not matching:
+                root.lossToast.show_toast()
+                root.restart()
+        elif matrix.count(11) == 1:
+            root.winToast.show_toast()
+    # ======= --- ----- ======= #
+
+    # ======= restart ======= #
+    def restart(root, _=None):
+        global ongoing
+        if ongoing:
+            ongoing = False
+            cursor.execute(f"INSERT INTO Scores VALUES (DATETIME('now'), {root.scoreVar.get()}, {2**max(matrix)})") 
+            conn.commit()
+            for cell in grid: 
+                if cell: 
+                    cell.destroy()
+            root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
+            root.scoreVar.set(0)
+    # ======= ------- ======= #
+    
+    # ======= start ======= #
+    def start(root, _=None):
+        global ongoing
+        if not ongoing:
+            Block(root.game).place()
+            Block(root.game).place()
+            ongoing = True
+    # ======= ----- ======= #
 # ======= ------ ======= #
 
 # ======= header ======= #
@@ -216,6 +314,10 @@ class GameScreen(CTkFrame):
         screen.grid_propagate(False)
         # ======= ---- ----- ======= #
 
+        # ======= variables ======= #
+        screen.parent = master
+        # ======= --------- ======= #
+
         # ======= base design ======= #
         for row in range(4):
             for column in range(4):
@@ -239,7 +341,84 @@ class GameScreen(CTkFrame):
     # ======= ---- ======= #
 # ======= ---- ------ ======= #
 
+# ======= block ======= #
+class Block:
+
+    # ======= init ======= #
+    def __init__(block, master):
+        # ======= place check ======= #
+        if matrix.count(0) == 0:
+            del block
+            return
+        # ======= ----- ----- ======= #
+
+        # ======= setup ======= #
+        block.power = choice([1]*9+[2])
+        block.var = IntVar(value=2**block.power)
+        block.cell = CTkLabel(
+            master, 
+            textvariable=block.var, 
+            fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
+            text_color="#ffffff" if block.power > 2 else "#756452", 
+            justify="center", 
+            anchor="center",
+            font=(FONT, 28),
+            width=116.25,
+            height=116.25,
+            corner_radius=35
+        )
+        block.master = master
+        # ======= ----- ======= #
+
+        # ======= position chooser ======= #
+        block.pos = randint(0, 15)
+        while matrix[block.pos] != 0: block.pos = randint(0, 15)
+        block.x = (block.pos%4)*136.25+73.125
+        block.y = (block.pos//4)*136.25+73.125
+        # ======= -------- ------- ======= #
+    # ======= ---- ======= #
+
+    # ======= place ======= #
+    def place(block):
+        block.cell.place(
+            x=block.x, 
+            y=block.y,
+            anchor="center"
+        )
+        matrix[block.pos] = block.power
+        grid[block.pos] = block
+    # ======= ----- ======= #
+
+    # ======= destroy ======= #
+    def destroy(block):
+        block.cell.destroy()
+        grid[block.pos] = None
+        matrix[block.pos] = 0
+        del block
+    # ======= ------- ======= #
+
+    # ======= set ======= #
+    def set(block):
+        block.var.set(2**block.power)
+        block.cell.configure(fg_color=COLORS[block.power])
+        block.cell.configure(text_color="#ffffff" if block.power > 2 else "#756452")
+        grid[block.pos] = block
+        matrix[block.pos] = block.power
+    # ======= --- ======= #
+
+    # ======= slide ======= #
+    def slide(block):
+        pass #TODO: make a slide function
+    # ======= ----- ======= #
+
+    # ======= merge ======= #           
+    def merge(self, direction):
+        pass #TODO: make a merge function
+    # ======= ----- ======= #
+# ======= ----- ======= #
+
 # ======= main code ======= #
 if __name__ == "__main__":
     App()
+    conn.close()
 # ======= ---- ---- ======= #
