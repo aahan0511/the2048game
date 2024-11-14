@@ -6,7 +6,6 @@ from sys import path
 from _tkinter import TclError
 from PIL import Image, ImageTk
 from random import randint, choice
-from tkinter import messagebox
 from ttkbootstrap.toast import ToastNotification
 # ======= ------- ======= #
 
