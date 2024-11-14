@@ -17,7 +17,7 @@ If you have never played 2048 before here is the rules of 2048:
 
 > You have a 4x4 grid, in which there 2 blocks in the start, you have 90% chance of haing an 2, while 10% chance of having an 4 in the start.
 
-> You can either play UP (⬆️), DOWN (⬇️), LEFT (⬅️), or RIGHT (➡️). Each of them will result all the blocks sliding in that direction. And the blocks having the same numbers will merge, making a block that is the sum of the merged blocks.
+> You can either play UP, DOWN, LEFT, or RIGHT. Each of them will result all the blocks sliding in that direction. And the blocks having the same numbers will merge, making a block that is the sum of the merged blocks.
 
 > You win when you reach 2048.
 
