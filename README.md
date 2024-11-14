@@ -1,6 +1,23 @@
 # the2048game
 This is the Python clone for 2048.
 
+## Table Of Contents
+- [Status](#status)
+- [Inspiration](#inspiration)
+- [How To Play](#how-to-play)
+- [Installation](#installation)
+    - [Source Code](#source-code-recommended)
+    - [Executable](#executable-not-ready)
+- [Data Stored](#data-stored)
+- [Requirements](#requirements)
+    - [Font](#font)
+    - [Modules](#modules)
+- [Notes](#notes)
+- [License](#license)
+- [Credit and Thanks](#credit-and-thanks)
+    - [Clear Code](#clear-code)
+    - [Aarav-S2005](#aarav-s2005)
+
 ## Status
 > [!NOTE]
 > This project is in development. But the UI is ready, and you may try to run the code, if you find any error, or designing mistake, please provide feedback through a issue.
@@ -36,22 +53,36 @@ This also requires all the [needed modules](requirements.txt requirements), for 
 This will install all needed modules and libraries.
 
 > [!TIP]
-> You might even need to edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
+> You might even edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
+
+> [!WARNING]
+> Some things may break when tampered with. Please edit the code with caution.
 
 ### Executable (not ready)
 On Windows you can install the executable from releases. The executable is only compatible with Windows currently.
 
-> [!NOTE]
+> [!CAUTION]
 > It is quite slow because it is made with `PyInstaller`. If you have any suggestions, put them in [this discussion](https://github.com/aahan0511/the2048game/discussions/2 "Ideas Discussion").
 
-## High Score
+## Data Stored
 Your score is locally saved along with the time and the highest number you reached.
+> [!NOTE]
+> No other information is used, stored, or sent to us.
 
-## Font
+## Requirements
+
+### Font
 The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono "JetBrainsMono on GitHub"). I have peronally used [JetBrains Mono Medium](requirements/JetBrainsMono-Medium.ttf), which is available in the repository. You can change the font in the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section.
 
+### Modules
+customtkinter - `pip install customtkinter`
+
+pillow (PIL) - `pip install pillow`
+
+ttkbootstrap - `pip install ttkbootstrap`
+
 ## Notes
-> [!WARNING]
+> [!IMPORTANT]
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section and change the first part of `DIRECTORY`.
 
