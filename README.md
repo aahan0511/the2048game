@@ -13,7 +13,7 @@ This is the Python clone for 2048.
     - [Font](#font)
     - [Modules](#modules)
 - [Notes](#notes)
-- [Commit History](#commit-history)
+- [Commit Activity](#commit-activity)
 - [License](#license)
 - [Credit and Thanks](#credit-and-thanks)
     - [Clear Code](#clear-code)
@@ -87,7 +87,7 @@ ttkbootstrap - `pip install ttkbootstrap`
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section and change the first part of `DIRECTORY`.
 
-## Commit History
+## Commit Activity 
 The [commit activity](https://github.com/aahan0511/the2048game/graphs/commit-activity) is linked here.
 
 ## License
