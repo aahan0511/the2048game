@@ -90,6 +90,8 @@ ttkbootstrap - `pip install ttkbootstrap`
 ## Commit History 
 The [commit activity](https://github.com/aahan0511/the2048game/graphs/commit-activity) is linked here.
 
+The [commit history](https://github.com/aahan0511/the2048game/activity) is linked here.
+
 ## License
 This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License),
 > MIT License
