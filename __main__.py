@@ -146,12 +146,12 @@ class App(CTk):
                     cell.destroy()
             root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
             root.scoreVar.set(0)
-            if showingLoss:
-                def clear():
-                    global showingLoss
-                    root.game.loser.grid_forget()
-                    showingLoss = False   
-                clear()
+        if showingLoss:
+            def clear():
+                global showingLoss
+                root.game.loser.grid_forget()
+                showingLoss = False   
+            clear()
     # ======= ------- ======= #
     
     # ======= start ======= #
