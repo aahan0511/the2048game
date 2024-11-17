@@ -85,8 +85,10 @@ pillow (PIL) - `pip install pillow`
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section and change the first part of `DIRECTORY`.
 
-## Commit History
+## Commit History 
 The [commit activity](https://github.com/aahan0511/the2048game/graphs/commit-activity) is linked here.
+
+The [commit history](https://github.com/aahan0511/the2048game/activity) is linked here.
 
 ## License
 This project has the [MIT License](https://en.wikipedia.org/wiki/MIT_License),
