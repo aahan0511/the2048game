@@ -1,18 +1,17 @@
 # ======= imports ======= #
-from customtkinter import *
+from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton
 from os import path as osPath, makedirs, getlogin
 from sqlite3 import connect
 from sys import path
 from _tkinter import TclError
 from PIL import Image, ImageTk
 from random import randint, choice
-from ttkbootstrap.toast import ToastNotification
 # ======= ------- ======= #
 
 # ======= constants ======= #
 USER = getlogin()
 DIRECTORY = f"C:\\Users\\{USER}\\AppData\\Local\\"+"the2048game\\"
-COLORS = [None, "#eee4da", "#ebd8b6", "#f3b178", "#f69562", "#f88165", "#f76644", "#f0d26c", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#3c3a32"]
+COLORS = [None, "#eee4da", "#ebd8b6", "#f3b178", "#f69562", "#f88165", "#f76644", "#f0d26c", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#393931"]
 PATHS = {
     "empty" : f"{path[0]}\\images\\empty.ico",
     "favicon" : f"{path[0]}\\images\\favicon.ico",
@@ -22,11 +21,13 @@ FONT = "JetBrains Mono Medium"
 SPEED = 5
 # ======= --------- ======= #
 
-# ======= variables ======= #
+# ======= global variables ======= #
 grid = [None]*16
 matrix = [0]*16
 ongoing = False
-# ======= --------- ======= #
+showingWin = False
+showingLoss = False
+# ======= ------ --------- ======= #
 
 # ======= directory and database creation ======= #
 if not osPath.exists(DIRECTORY): makedirs(DIRECTORY)
@@ -41,7 +42,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Blo
 class App(CTk):
 
     # ======= init ======= #
-    def __init__(root):
+    def __init__(root) -> None:
         # ======= window setup ======= #
         super().__init__("#faf8f0")
         root.geometry("726x700+50+50")
@@ -73,27 +74,6 @@ class App(CTk):
         root.scoreVar = IntVar(master=root, value=0)
         root.highVar = IntVar(master=root, value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
         icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
-
-        root.winToast  = ToastNotification(
-            "You Won!!!", 
-            "You got 2048.", 
-            2000, 
-            "success", 
-            False, 
-            "🥳", 
-            "JetBrains Mono Medium", 
-            position=(50, 50, "se")
-        )
-        root.lossToast  = ToastNotification(
-            "You Lost...", 
-            "You have no possible moves left..", 
-            2000, 
-            "danger", 
-            False, 
-            "😔", 
-            "JetBrains Mono Medium", 
-            position=(50, 50, "se")
-        )
         # ======= --------- ======= # 
 
         # ======= gui ======= #
@@ -148,10 +128,10 @@ class App(CTk):
                     if grid[cell.pos+4].power == cell.power:
                         matching = True
             if not matching:
-                root.lossToast.show_toast()
+                root.game.loss()
                 root.restart()
         elif matrix.count(11) == 1:
-            root.winToast.show_toast()
+            root.game.win()
     # ======= --- ----- ======= #
 
     # ======= restart ======= #
@@ -166,12 +146,18 @@ class App(CTk):
                     cell.destroy()
             root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
             root.scoreVar.set(0)
+            if showingLoss:
+                def clear():
+                    global showingLoss
+                    root.game.loser.grid_forget()
+                    showingLoss = False   
+                clear()
     # ======= ------- ======= #
     
     # ======= start ======= #
     def start(root, _=None):
         global ongoing
-        if not ongoing:
+        if not ongoing and not showingWin and not showingLoss:
             Block(root.game).place()
             Block(root.game).place()
             ongoing = True
@@ -307,7 +293,7 @@ class Side(CTkFrame):
             border_width=5,
             corner_radius=35,
             width=100, 
-            height=667, 
+            height=555, 
         )
         # ======= ----- ======= #
 
@@ -348,7 +334,7 @@ class Side(CTkFrame):
         # ======= --- ======= #
 
         # ======= place ======= #
-        side.place(x=72.5, y=344, anchor="center")
+        side.place(x=72.5, y=400, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
 # ======= ---- --- ======= #
@@ -399,6 +385,85 @@ class GameScreen(CTkFrame):
         screen.place(x=426, y=400, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
+
+    # ======= win ======= #
+    def win(screen):
+        if not showingLoss:
+            global showingWin
+            showingWin = True
+
+            screen.winner = CTkFrame(
+                screen, 
+                fg_color="#ffd700", 
+                corner_radius=35
+            )
+            screen.winner.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+
+            text = CTkLabel(
+                screen.winner,
+                font=(FONT, 100),
+                text="You Win!",
+                text_color="#888888"
+            )
+            text.place(relx=0.5, rely=0.5, anchor="center")
+
+            subtext = CTkLabel(
+                screen.winner,
+                font=(FONT, 20),
+                text="Click to Continue",
+                text_color="#888888"
+            )
+            subtext.place(relx=0.5, rely=0.6, anchor="center")
+
+            try:
+                import pywinstyles
+                pywinstyles.set_opacity(screen.winner, value=0.5, color="#9b8878")
+            except ImportError: pass
+
+            def clear(_):
+                global showingWin
+                screen.winner.grid_forget()
+                showingWin = False
+
+            screen.winner.bind("<Button>", clear)        
+            text.bind("<Button>", clear)        
+            subtext.bind("<Button>", clear)        
+    # ======= --- ======= #
+
+    # ======= loss ======= #
+    def loss(screen):
+        if not showingWin:
+            global showingLoss
+            showingLoss = True
+
+            screen.loser = CTkFrame(
+                screen, 
+                fg_color="#888888", 
+                corner_radius=35
+            )
+            screen.loser.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+
+            text = CTkLabel(
+                screen.loser,
+                font=(FONT, 100),
+                text="You Lose!",
+                text_color="#ffffff"
+            )
+            text.place(relx=0.5, rely=0.5, anchor="center")
+
+            subtext = CTkLabel(
+                screen.loser,
+                font=(FONT, 20),
+                text="Press END to Continue",
+                text_color="#ffffff"
+            )
+            subtext.place(relx=0.5, rely=0.6, anchor="center")
+
+            try:
+                import pywinstyles
+                pywinstyles.set_opacity(screen.loser, value=0.5, color="#9b8878")
+            except ImportError: pass
+    # ======= --- ======= #
 # ======= ---- ------ ======= #
 
 # ======= block ======= #
