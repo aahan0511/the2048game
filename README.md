@@ -80,8 +80,6 @@ customtkinter - `pip install customtkinter`
 
 pillow (PIL) - `pip install pillow`
 
-ttkbootstrap - `pip install ttkbootstrap`
-
 ## Notes
 > [!IMPORTANT]
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
