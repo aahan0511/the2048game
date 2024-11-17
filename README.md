@@ -75,7 +75,7 @@ Your score is locally saved along with the time and the highest number you reach
 ## Requirements
 
 ### Font
-The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono "JetBrainsMono on GitHub"). I have peronally used [JetBrains Mono Medium](requirements/JetBrainsMono-Medium.ttf), which is available in the repository. You can change the font in the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section.
+The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono "JetBrainsMono on GitHub"). I have peronally used [JetBrains Mono Medium](requirements/JetBrainsMono-Medium.ttf), which is available in the repository. You can change the font in the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L22 "constants section") section.
 
 ### Modules
 customtkinter - `pip install customtkinter`
@@ -93,7 +93,7 @@ comment-out [`pywinstyles`](https://github.com/aahan0511/the2048game/blob/main/r
 ## Notes
 > [!IMPORTANT]
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
-> In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L21 "constants section") section and change the first part of `DIRECTORY`.
+> In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/main/__main__.py#L11-L22 "constants section") section and change the first part of `DIRECTORY`.
 
 ## Commit History 
 The [commit activity](https://github.com/aahan0511/the2048game/graphs/commit-activity) is linked here.
