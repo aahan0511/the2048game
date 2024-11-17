@@ -12,6 +12,8 @@ This is the Python clone for 2048.
 - [Requirements](#requirements)
     - [Font](#font)
     - [Modules](#modules)
+        - [Only For Windows](#only-for-windows)
+        - [Only For non-Windows](#only-for-non-windows)
 - [Notes](#notes)
 - [Commit History](#commit-history)
 - [License](#license)
@@ -79,6 +81,14 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 customtkinter - `pip install customtkinter`
 
 pillow (PIL) - `pip install pillow`
+
+#### Only For Windows:
+pywinstyles - `pip install pywinstyles`
+
+#### Only for non-Windows:
+comment-out [`pywinstyles`](https://github.com/aahan0511/the2048game/blob/main/requirements.txt#L5) in [requirements.txt](requirements.txt), 
+> [!NOTE]
+> This will result in opaque and broken, winning and losing screen. If you have any suggestion to fix this on non-Windows computers, please suggest in [this discussion](https://github.com/aahan0511/the2048game/discussions/4 "Ideas Discussion").
 
 ## Notes
 > [!IMPORTANT]

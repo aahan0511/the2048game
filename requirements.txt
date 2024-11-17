@@ -1,2 +1,5 @@
 customtkinter
 pillow
+
+# for windows only:
+pywinstyles
