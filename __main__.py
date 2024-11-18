@@ -45,7 +45,7 @@ class App(CTk):
     def __init__(root) -> None:
         # ======= window setup ======= #
         super().__init__("#faf8f0")
-        root.geometry("726x700+50+50")
+        root.geometry("715x700+50+50")
         root.resizable(False, False)
 
         root.bind("<Any-KeyPress>", root.keyPress)
@@ -80,6 +80,9 @@ class App(CTk):
         root.header = Header(root, root.scoreVar, root.highVar, icon)
         root.side = Side(root)
         root.game = GameScreen(root)
+
+        root.bind("f", lambda _: root.game.win())
+        root.bind("g", lambda _: root.game.loss())
         # ======= --- ======= #
 
         # ======= mainloop ======= #
@@ -147,11 +150,9 @@ class App(CTk):
             root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
             root.scoreVar.set(0)
         if showingLoss:
-            def clear():
-                global showingLoss
-                root.game.loser.grid_forget()
-                showingLoss = False   
-            clear()
+            root.game.loseNotifier.clear()
+        if showingWin:
+            root.game.winNotifier.clear()
     # ======= ------- ======= #
     
     # ======= start ======= #
@@ -209,7 +210,7 @@ class Header(CTkFrame):
         # ======= --- ======= #
 
         # ======= place ======= #
-        header.place(x=426, y=60, anchor="center")
+        header.place(x=415, y=60, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
 # ======= ------ ======= #
@@ -382,7 +383,7 @@ class GameScreen(CTkFrame):
         # ======= ---- ------ ======= #
 
         # ======= place ======= #
-        screen.place(x=426, y=400, anchor="center")
+        screen.place(x=415, y=400, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
 
@@ -391,43 +392,7 @@ class GameScreen(CTkFrame):
         if not showingLoss:
             global showingWin
             showingWin = True
-
-            screen.winner = CTkFrame(
-                screen, 
-                fg_color="#ffd700", 
-                corner_radius=35
-            )
-            screen.winner.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
-
-            text = CTkLabel(
-                screen.winner,
-                font=(FONT, 100),
-                text="You Win!",
-                text_color="#888888"
-            )
-            text.place(relx=0.5, rely=0.5, anchor="center")
-
-            subtext = CTkLabel(
-                screen.winner,
-                font=(FONT, 20),
-                text="Click to Continue",
-                text_color="#888888"
-            )
-            subtext.place(relx=0.5, rely=0.6, anchor="center")
-
-            try:
-                import pywinstyles
-                pywinstyles.set_opacity(screen.winner, value=0.5, color="#9b8878")
-            except ImportError: pass
-
-            def clear(_):
-                global showingWin
-                screen.winner.grid_forget()
-                showingWin = False
-
-            screen.winner.bind("<Button>", clear)        
-            text.bind("<Button>", clear)        
-            subtext.bind("<Button>", clear)        
+            screen.winNotifier = Notification(screen, True)    
     # ======= --- ======= #
 
     # ======= loss ======= #
@@ -435,16 +400,70 @@ class GameScreen(CTkFrame):
         if not showingWin:
             global showingLoss
             showingLoss = True
+            screen.loseNotifier = Notification(screen, False)
+    # ======= --- ======= #
+# ======= ---- ------ ======= #
 
-            screen.loser = CTkFrame(
-                screen, 
+# ======= notification ======= #
+class Notification(CTkFrame):
+
+    # ======= init ======= #
+    def __init__(notifier, master, version):
+        # ======= win ======= #
+        if version:
+            # ======= setup ======= #
+            super().__init__(
+                master, 
+                fg_color="#ffd700", 
+                corner_radius=35
+            )
+            notifier.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+            # ======= ----- ======= #
+
+            # ======= gui ======= #
+            text = CTkLabel(
+                notifier,
+                font=(FONT, 100),
+                text="You Win!",
+                text_color="#888888"
+            )
+            text.place(relx=0.5, rely=0.5, anchor="center")
+
+            subtext = CTkLabel(
+                notifier,
+                font=(FONT, 20),
+                text="Click to Continue",
+                text_color="#888888"
+            )
+            subtext.place(relx=0.5, rely=0.6, anchor="center")
+            
+            try:
+                import pywinstyles
+                pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
+            except ImportError: pass
+            # ======= --- ======= #
+
+            # ======= exit ======= #
+            notifier.bind("<Button>", notifier.clear)        
+            text.bind("<Button>", notifier.clear)        
+            subtext.bind("<Button>", notifier.clear)        
+            # ======= ---- ======= #
+        # ======= --- ======= #
+
+        # ======= loss ======= #
+        else:
+            # ======= setup ======= #
+            super().__init__(
+                master, 
                 fg_color="#888888", 
                 corner_radius=35
             )
-            screen.loser.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+            notifier.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+            # ======= ----- ======= #
 
+            # ======= gui ======= #
             text = CTkLabel(
-                screen.loser,
+                notifier,
                 font=(FONT, 100),
                 text="You Lose!",
                 text_color="#ffffff"
@@ -452,7 +471,7 @@ class GameScreen(CTkFrame):
             text.place(relx=0.5, rely=0.5, anchor="center")
 
             subtext = CTkLabel(
-                screen.loser,
+                notifier,
                 font=(FONT, 20),
                 text="Press END to Continue",
                 text_color="#ffffff"
@@ -461,10 +480,20 @@ class GameScreen(CTkFrame):
 
             try:
                 import pywinstyles
-                pywinstyles.set_opacity(screen.loser, value=0.5, color="#9b8878")
+                pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
             except ImportError: pass
-    # ======= --- ======= #
-# ======= ---- ------ ======= #
+            # ======= --- ======= #
+        # ======= ---- ======= #
+    # ======= ---- ======= #
+
+    # ======= clear ======= #
+    def clear(notifier, _=None):
+        global showingWin, showingLoss
+        notifier.grid_forget()
+        showingWin = False
+        showingLoss = False
+    # ======= ----- ======= #
+# ======= ------------ ======= #
 
 # ======= block ======= #
 class Block:
