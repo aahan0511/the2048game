@@ -6,6 +6,7 @@ from sys import path
 from _tkinter import TclError
 from PIL import Image, ImageTk
 from random import randint, choice
+from webbrowser import open as openWeb
 # ======= ------- ======= #
 
 # ======= constants ======= #
@@ -27,6 +28,7 @@ matrix = [0]*16
 ongoing = False
 showingWin = False
 showingLoss = False
+pause = False
 # ======= ------ --------- ======= #
 
 # ======= directory and database creation ======= #
@@ -49,8 +51,8 @@ class App(CTk):
         root.resizable(False, False)
 
         root.bind("<Any-KeyPress>", root.keyPress)
-        root.bind("<space>", root.start)
-        root.bind("<Escape>", root.restart)
+        root.bind("<space>", root.play)
+        root.bind("<Escape>", root.end)
         # ======= ------ ----- ======= #
 
         # ======= empty title bar ======= #
@@ -80,9 +82,11 @@ class App(CTk):
         root.header = Header(root, root.scoreVar, root.highVar, icon)
         root.side = Side(root)
         root.game = GameScreen(root)
+        root.more = More(root, root.side.play, root.side.end)
+        root.button = MoreButton(root, root.more)
 
-        root.bind("f", lambda _: root.game.win())
-        root.bind("g", lambda _: root.game.loss())
+        # root.bind("f", lambda _: root.game.win())
+        # root.bind("g", lambda _: root.game.loss())
         # ======= --- ======= #
 
         # ======= mainloop ======= #
@@ -132,38 +136,120 @@ class App(CTk):
                         matching = True
             if not matching:
                 root.game.loss()
-                root.restart()
         elif matrix.count(11) == 1:
             root.game.win()
     # ======= --- ----- ======= #
 
-    # ======= restart ======= #
-    def restart(root, _=None):
-        global ongoing
-        if ongoing:
-            ongoing = False
-            cursor.execute(f"INSERT INTO Scores VALUES (DATETIME('now'), {root.scoreVar.get()}, {2**max(matrix)})") 
-            conn.commit()
-            for cell in grid: 
-                if cell: 
-                    cell.destroy()
-            root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
-            root.scoreVar.set(0)
-        if showingLoss:
-            root.game.loseNotifier.clear()
-        if showingWin:
-            root.game.winNotifier.clear()
+    # ======= end ======= #
+    def end(root, _=None):
+        # ======= end ======= #
+        if not pause:
+            global ongoing
+            if ongoing:
+                ongoing = False
+                cursor.execute(f"INSERT INTO Scores VALUES (DATETIME('now'), {root.scoreVar.get()}, {2**max(matrix)})") 
+                conn.commit()
+                for cell in grid: 
+                    if cell: 
+                        cell.destroy()
+                root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
+                root.scoreVar.set(0)
+            if showingLoss:
+                root.game.loseNotifier.clear()
+            if showingWin:
+                root.game.winNotifier.clear()
+        # ======= --- ======= #
+
+        # ======= open github ======= #
+        else:
+            openWeb("https://github.com/aahan0511/the2048game")
+        # ======= ---- ------ ======= #
     # ======= ------- ======= #
     
-    # ======= start ======= #
-    def start(root, _=None):
-        global ongoing
-        if not ongoing and not showingWin and not showingLoss:
-            Block(root.game).place()
-            Block(root.game).place()
-            ongoing = True
+    # ======= play ======= #
+    def play(root, _=None):
+        # ======= play ======= #
+        if not pause:
+            global ongoing
+            if not ongoing and not showingWin and not showingLoss:
+                Block(root.game).place()
+                Block(root.game).place()
+                ongoing = True
+        # ======= ---- ======= #
+
+        # ======= show leaderboard ======= #
+        else:
+            print("pass")
+        # ======= ---- ----------- ======= #
     # ======= ----- ======= #
 # ======= ------ ======= #
+
+# ======= more button ======= #
+class MoreButton(CTkFrame):
+    
+    # ======= init ======= #
+    def __init__(button, master, more):
+        super().__init__(
+            master, 
+            fg_color="#bdac97",
+            border_color="#9c8978",
+            border_width=5,
+            height=100,
+            width=100,
+            corner_radius=35
+        )
+        button.pack_propagate(False)
+
+        button.text = CTkLabel(
+            button,
+            font=(FONT, 75),
+            text="⋅⋅⋅",
+            text_color="#9c8978",
+            fg_color="#bdac98"
+        )
+        button.text.pack(expand=True, pady=19)
+
+        button.bind("<Button>", more.click)
+        button.text.bind("<Button>", more.click)
+
+        button.place(x=72.5, y=60, anchor="center")
+    # ======= ---- ======= #
+# ======= ---- ------ ======= #
+
+# ======= more box ======= #
+class More(CTkFrame):
+
+    # ======= init ======= #
+    def __init__(more, master, playButton, endButton):
+        super().__init__(
+            master,
+            border_color="#eae7d9",
+            border_width=5,
+            fg_color="#faf8f0",
+            height=670,
+            width=555,
+            corner_radius=35
+        )
+
+        more.playButton = playButton
+        more.endButton = endButton
+    # ======= ---- ======= #
+
+    # ======= click ======= #
+    def click(more, _):
+        global pause
+        if not pause:
+            more.place(x=415, y=342, anchor="center")
+            more.lift()
+            more.playButton.configure(text="  L\n  E\n  A\nS D\nH E\nO R\nW B\n  O\n  A\n  R\n  D", font=(FONT, 14))
+            more.endButton.configure(text="  G\nO I\nP T\nE H\nN U\n  B", font=(FONT, 18))
+        else:
+            more.place_forget()
+            more.playButton.configure(text="P\nL\nA\nY", font=(FONT, 28))
+            more.endButton.configure(text="E\nN\nD", font=(FONT, 28))
+        pause = not pause
+    # ======= ----- ======= #
+# ======= ---- --- ======= #
 
 # ======= header ======= #
 class Header(CTkFrame):
@@ -271,6 +357,11 @@ class Score(CTkFrame):
         score.label = CTkLabel(score, text=description, font=(FONT, 13), text_color="#988a86")
         score.label.place(relx=0.5, rely=0, anchor="n")
 
+        try:
+            import pywinstyles
+            pywinstyles.set_opacity(score.label, color=color)
+        except ImportError: pass
+
         score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=(FONT, 20))
         score.number.place(relx=0.5, rely=0.6, anchor="center")
         # ======= --- ======= #
@@ -315,7 +406,7 @@ class Side(CTkFrame):
             border_color="#eae7d9",
             border_width=3,
             font=(FONT, 28),
-            command=master.start
+            command=master.play
         )
         side.play.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
         
@@ -329,7 +420,7 @@ class Side(CTkFrame):
             border_color="#eae7d9",
             border_width=3,
             font=(FONT, 28),
-            command=master.restart
+            command=master.end
         )
         side.end.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
         # ======= --- ======= #
