@@ -17,9 +17,6 @@ This is the Python clone for 2048.
 - [Notes](#notes)
 - [Commit History](#commit-history)
 - [License](#license)
-- [Credit and Thanks](#credit-and-thanks)
-    - [Clear Code](#clear-code)
-    - [Aarav-S2005](#aarav-s2005)
 
 ## Status
 > [!NOTE]
@@ -125,11 +122,3 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 as [LICENSE](LICENSE.txt "LICENSE file")
-
-## Credit and Thanks
-
-### [Clear Code](https://github.com/clear-code-projects "Clear Code's GitHub")
-I took his course [`Learn Python by creating 10 apps with tkinter`](https://www.udemy.com/course/learn-python-by-creating-10-apps/), and it was super helpful in making this project.
-
-### [Aarav-S2005](https://github.com/Aarav-S2005 "Aarav-S2005's GitHub")
-He was the one who gave me the idea to do a competition who makes a better 2048 clone. Here is his [repository](https://github.com/Aarav-S2005/The2048Game "The2048Game by Aarav-S2005").
