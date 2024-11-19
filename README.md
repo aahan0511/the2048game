@@ -80,7 +80,7 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 [pillow (PIL)](https://github.com/python-pillow/Pillow) - `pip install pillow`
 
 #### Only For Windows:
-pywinstyles - `pip install pywinstyles`
+[pywinstyles](https://github.com/Akascape/py-window-styles) - `pip install pywinstyles`
 
 #### Only for non-Windows:
 comment-out [`pywinstyles`](https://github.com/aahan0511/the2048game/blob/main/requirements.txt#L5) in [requirements.txt](requirements.txt), 
