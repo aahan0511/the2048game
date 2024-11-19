@@ -4,6 +4,7 @@ from os import path as osPath, makedirs, getlogin
 from sqlite3 import connect
 from sys import path
 from _tkinter import TclError
+from tkinter import Event
 from PIL import Image, ImageTk
 from random import randint, choice
 from webbrowser import open as openWeb
@@ -32,7 +33,8 @@ pause = False
 # ======= ------ --------- ======= #
 
 # ======= directory and database creation ======= #
-if not osPath.exists(DIRECTORY): makedirs(DIRECTORY)
+if not osPath.exists(DIRECTORY): 
+    makedirs(DIRECTORY)
 
 conn = connect(f"{DIRECTORY}\\2048.db")
 cursor = conn.cursor()
@@ -73,16 +75,21 @@ class App(CTk):
         # ======= ----- ----- --- ======= #
 
         # ======= variables ======= # 
-        root.scoreVar = IntVar(master=root, value=0)
-        root.highVar = IntVar(master=root, value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
+        root.scoreVar = IntVar(value=0)
+        root.highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
         icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
         # ======= --------- ======= # 
 
         # ======= gui ======= #
-        root.more = More(root)
-        root.header = Header(root, root.scoreVar, root.highVar, icon)
-        root.game = GameScreen(root)
-        root.side = Side(root, root.more)
+        root.more = More(master=root)
+        root.header = Header(
+            master=root, 
+            scoreVar=root.scoreVar,
+            highVar=root.highVar,
+            icon=icon
+        )
+        root.game = GameScreen(master=root)
+        root.side = Side(master=root, more=root.more)
         # ======= --- ======= #
 
         # ======= mainloop ======= #
@@ -91,30 +98,37 @@ class App(CTk):
     # ======= ---- ======= #
 
     # ======= key press ======= #
-    def keyPress(root, event):
+    def keyPress(root, event: Event) -> None:
+        # ======= declarations ======= #
         global movement
         movement = False
         key = event.keysym
+        # ======= ------------ ======= #
+
+        # ======= movement switchcase ======= #
         if key == "Left" or key == "a":
             for cell in grid:
                 if cell != None:
-                    cell.merge("left")
+                    cell.merge(direction="left")
         if key == "Right" or key == "d":
             for cell in grid[::-1]:
                 if cell != None:
-                    cell.merge("right")
+                    cell.merge(direction="right")
         if key == "Up" or key == "w":
             tempGrid = grid[::4]+grid[1::4]+grid[2::4]+grid[3::4]
             for cell in tempGrid:
                 if cell != None:
-                    cell.merge("up")
+                    cell.merge(direction="up")
         if key == "Down" or key == "s":
-            tempGrid = grid[::4][::-1]+grid[1::4][::-1]+grid[2::4][::-1]+grid[3::4][::-1]
+            tempGrid = (grid[::4]+grid[1::4]+grid[2::4]+grid[3::4])[::-1]
             for cell in tempGrid:
                 if cell != None:
-                    cell.merge("down")
+                    cell.merge(direction="down")
+        # ======= -------- ---------- ======= #
+
+        # ======= game checks ======= #
         if movement:
-            Block(root.game).place()
+            Block(master=root.game).place()
         if matrix.count(0) == 0:
             matching = False
             for cell in grid:
@@ -134,10 +148,11 @@ class App(CTk):
                 root.game.loss()
         elif matrix.count(11) == 1:
             root.game.win()
+        # ======= ---- ------ ======= #
     # ======= --- ----- ======= #
 
     # ======= end ======= #
-    def end(root, _=None):
+    def end(root, _: Event = None) -> None:
         # ======= end ======= #
         if not pause:
             global ongoing
@@ -163,19 +178,19 @@ class App(CTk):
     # ======= ------- ======= #
     
     # ======= play ======= #
-    def play(root, _=None):
+    def play(root, _: Event = None) -> None:
         # ======= play ======= #
         if not pause:
             global ongoing
             if not ongoing and not showingWin and not showingLoss:
-                Block(root.game).place()
-                Block(root.game).place()
+                Block(master=root.game).place()
+                Block(master=root.game).place()
                 ongoing = True
         # ======= ---- ======= #
 
         # ======= show leaderboard ======= #
         else:
-            print("pass")
+            pass #TODO: Add leaderboard function
         # ======= ---- ----------- ======= #
     # ======= ----- ======= #
 # ======= ------ ======= #
@@ -184,7 +199,7 @@ class App(CTk):
 class More(CTkFrame):
 
     # ======= init ======= #
-    def __init__(more, master):
+    def __init__(more, master: App) -> None:
         super().__init__(
             master,
             border_color="#9c8978",
@@ -201,7 +216,7 @@ class More(CTkFrame):
 class Header(CTkFrame):
 
     # ======= init ======= #
-    def __init__(header, master, scoreVar, highVar, icon):
+    def __init__(header, master: App, scoreVar: IntVar, highVar: IntVar, icon: ImageTk.PhotoImage) -> None:
         # ======= setup ======= #
         super().__init__(
             master,
@@ -225,19 +240,19 @@ class Header(CTkFrame):
         header.namePlate = NamePlate(header, icon)
 
         header.curScore = Score(
-            header, 
-            "#eae7d9", 
-            1, 
-            "SCORE", 
-            scoreVar
+            master=header, 
+            color="#eae7d9", 
+            pos=1, 
+            description="SCORE", 
+            var=scoreVar
         )
 
         header.highScore = Score(
-            header, 
-            "#faf8f0", 
-            2, 
-            "BEST", 
-            highVar
+            master=header, 
+            color="#faf8f0", 
+            pos=2, 
+            description="BEST", 
+            var=highVar
         )
         # ======= --- ======= #
 
@@ -251,7 +266,7 @@ class Header(CTkFrame):
 class NamePlate(CTkFrame):
 
     # ======= init ======= #
-    def __init__(nameplate, master, icon):
+    def __init__(nameplate, master: Header, icon: ImageTk.PhotoImage) -> None:
         # ======= setup ======= #
         super().__init__(master, fg_color="transparent")
         # ======= ----- ======= #
@@ -288,7 +303,7 @@ class NamePlate(CTkFrame):
 class Score(CTkFrame):
 
     # ======= init ======= #
-    def __init__(score, master, color, pos, description, var):
+    def __init__(score, master: Header, color: str, pos: int, description: str, var: IntVar) -> None:
         # ======= setup ======= #
         super().__init__(
             master,
@@ -322,7 +337,7 @@ class Score(CTkFrame):
 class Side(CTkFrame):
 
     # ======= init ======= #
-    def __init__(side, master, more):
+    def __init__(side, master: App, more: More) -> None:
         # ======= setup ======= #
         super().__init__(
             master,
@@ -393,7 +408,7 @@ class Side(CTkFrame):
     # ======= ---- ======= #
 
     # ======= click ======= #
-    def click(side):
+    def click(side) -> None:
         global pause
         if not pause:
             side.more.place(x=415, y=342, anchor="center")
@@ -414,7 +429,7 @@ class Side(CTkFrame):
 class GameScreen(CTkFrame):
 
     # ======= init ======= #
-    def __init__(screen, master):
+    def __init__(screen, master: App) -> None:
         # ======= setup ======= #
         super().__init__(
             master,
@@ -431,9 +446,9 @@ class GameScreen(CTkFrame):
         screen.grid_propagate(False)
         # ======= ---- ----- ======= #
 
-        # ======= variables ======= #
+        # ======= variable ======= #
         screen.parent = master
-        # ======= --------- ======= #
+        # ======= -------- ======= #
 
         # ======= base design ======= #
         for row in range(4):
@@ -458,7 +473,7 @@ class GameScreen(CTkFrame):
     # ======= ---- ======= #
 
     # ======= win ======= #
-    def win(screen):
+    def win(screen) -> None:
         if not showingLoss:
             global showingWin
             showingWin = True
@@ -466,7 +481,7 @@ class GameScreen(CTkFrame):
     # ======= --- ======= #
 
     # ======= loss ======= #
-    def loss(screen):
+    def loss(screen) -> None:
         if not showingWin:
             global showingLoss
             showingLoss = True
@@ -478,7 +493,7 @@ class GameScreen(CTkFrame):
 class Notification(CTkFrame):
 
     # ======= init ======= #
-    def __init__(notifier, master, version):
+    def __init__(notifier, master: GameScreen, version: bool) -> None:
         # ======= win ======= #
         if version:
             # ======= setup ======= #
@@ -557,7 +572,7 @@ class Notification(CTkFrame):
     # ======= ---- ======= #
 
     # ======= clear ======= #
-    def clear(notifier, _=None):
+    def clear(notifier, _: Event = None) -> None:
         global showingWin, showingLoss
         notifier.grid_forget()
         showingWin = False
@@ -569,7 +584,7 @@ class Notification(CTkFrame):
 class Block:
 
     # ======= init ======= #
-    def __init__(block, master):
+    def __init__(block, master: GameScreen) -> None:
         # ======= place check ======= #
         if matrix.count(0) == 0:
             del block
@@ -603,7 +618,7 @@ class Block:
     # ======= ---- ======= #
 
     # ======= place ======= #
-    def place(block):
+    def place(block) -> None:
         block.cell.place(
             x=block.x, 
             y=block.y,
@@ -614,7 +629,7 @@ class Block:
     # ======= ----- ======= #
 
     # ======= destroy ======= #
-    def destroy(block):
+    def destroy(block) -> None:
         block.cell.destroy()
         grid[block.pos] = None
         matrix[block.pos] = 0
@@ -622,7 +637,7 @@ class Block:
     # ======= ------- ======= #
 
     # ======= set ======= #
-    def set(block):
+    def set(block) -> None:
         block.var.set(2**block.power)
         block.cell.configure(fg_color=COLORS[block.power])
         block.cell.configure(text_color="#ffffff" if block.power > 2 else "#756452")
@@ -631,7 +646,8 @@ class Block:
     # ======= --- ======= #
 
     # ======= slide ======= #
-    def slide(block, direction):
+    def slide(block, direction: str) -> None:
+        # ======= left ======= #
         if direction == "left" and block.pos%4 != 0:
             final = block.x - 136.25 
             def left():
@@ -640,6 +656,9 @@ class Block:
                 if block.x != final:
                     left()
             left()
+        # ======= ---- ======= #
+
+        # ======= right ======= #
         elif direction == "right" and block.pos%4 != 3:
             final = block.x + 136.25 
             def right():
@@ -648,6 +667,9 @@ class Block:
                 if block.x != final:
                     right()
             right()
+        # ======= ----- ======= #
+
+        # ======= up ======= #
         elif direction == "up" and block.pos//4 != 0:
             final = block.y + 136.25 
             def up():
@@ -656,6 +678,9 @@ class Block:
                 if block.y != final:
                     up()
             up()
+        # ======= -- ======= #
+
+        # ======= down ======= #
         elif direction == "down" and block.pos//4 != 3:
             final = block.y + 136.25 
             def down():
@@ -664,16 +689,16 @@ class Block:
                 if block.y != final:
                     down()
             down()
+        # ======= ---- ======= #
     # ======= ----- ======= #
 
     # ======= merge ======= #           
-    def merge(self):
+    def merge(self, direction: str) -> None:
         pass #TODO: add merge function
     # ======= ----- ======= #
 # ======= ----- ======= #
 
-# ======= main code ======= #
-if __name__ == "__main__":
-    app = App()
-    conn.close()
-# ======= ---- ---- ======= #
+# ======= execution ======= #
+app = App()
+conn.close()
+# ======= --------- ======= #
