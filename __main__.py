@@ -21,6 +21,7 @@ PATHS = {
 }
 FONT = "JetBrains Mono Medium"
 SPEED = 5
+GROW_SPEED = 3.6
 # ======= --------- ======= #
 
 # ======= global variables ======= #
@@ -602,16 +603,18 @@ class Block:
             justify="center", 
             anchor="center",
             font=(FONT, 28),
-            width=116.25,
-            height=116.25,
-            corner_radius=35
+            width=1,
+            height=1,
+            corner_radius=35,
+            bg_color="transparent",
         )
         block.master = master
         # ======= ----- ======= #
 
         # ======= position chooser ======= #
         block.pos = randint(0, 15)
-        while matrix[block.pos] != 0: block.pos = randint(0, 15)
+        while matrix[block.pos] != 0: 
+            block.pos = randint(0, 15)
         block.x = (block.pos%4)*136.25+73.125
         block.y = (block.pos//4)*136.25+73.125
         # ======= -------- ------- ======= #
@@ -626,13 +629,19 @@ class Block:
         )
         matrix[block.pos] = block.power
         grid[block.pos] = block
+        def grow(side):
+            block.cell.configure(width=116.25-side, height=116.25-side, justify="center", anchor="center", corner_radius=35)
+            if side > 0:
+                block.cell.after(1, lambda: grow(side-GROW_SPEED if side>=GROW_SPEED else 0))
+                block.cell.lift()
+        grow(116.25)
     # ======= ----- ======= #
 
     # ======= destroy ======= #
     def destroy(block) -> None:
-        block.cell.destroy()
         grid[block.pos] = None
         matrix[block.pos] = 0
+        block.cell.destroy()
         del block
     # ======= ------- ======= #
 
