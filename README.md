@@ -79,8 +79,6 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 
 [pillow (PIL)](https://github.com/python-pillow/Pillow) - `pip install pillow`
 
-[CTkTable](https://github.com/Akascape/CTkTable) - `pip install CTkTable`
-
 #### Only For Windows:
 pywinstyles - `pip install pywinstyles`
 
