@@ -79,14 +79,10 @@ class App(CTk):
         # ======= --------- ======= # 
 
         # ======= gui ======= #
+        root.more = More(root)
         root.header = Header(root, root.scoreVar, root.highVar, icon)
-        root.side = Side(root)
         root.game = GameScreen(root)
-        root.more = More(root, root.side.play, root.side.end)
-        root.button = MoreButton(root, root.more)
-
-        # root.bind("f", lambda _: root.game.win())
-        # root.bind("g", lambda _: root.game.loss())
+        root.side = Side(root, root.more)
         # ======= --- ======= #
 
         # ======= mainloop ======= #
@@ -184,71 +180,21 @@ class App(CTk):
     # ======= ----- ======= #
 # ======= ------ ======= #
 
-# ======= more button ======= #
-class MoreButton(CTkFrame):
-    
-    # ======= init ======= #
-    def __init__(button, master, more):
-        super().__init__(
-            master, 
-            fg_color="#bdac97",
-            border_color="#9c8978",
-            border_width=5,
-            height=100,
-            width=100,
-            corner_radius=35
-        )
-        button.pack_propagate(False)
-
-        button.text = CTkLabel(
-            button,
-            font=(FONT, 75),
-            text="⋅⋅⋅",
-            text_color="#9c8978",
-            fg_color="#bdac98"
-        )
-        button.text.pack(expand=True, pady=19)
-
-        button.bind("<Button>", more.click)
-        button.text.bind("<Button>", more.click)
-
-        button.place(x=72.5, y=60, anchor="center")
-    # ======= ---- ======= #
-# ======= ---- ------ ======= #
-
 # ======= more box ======= #
 class More(CTkFrame):
 
     # ======= init ======= #
-    def __init__(more, master, playButton, endButton):
+    def __init__(more, master):
         super().__init__(
             master,
-            border_color="#eae7d9",
+            border_color="#9c8978",
             border_width=5,
-            fg_color="#faf8f0",
+            fg_color="#bdac97",
             height=670,
             width=555,
             corner_radius=35
         )
-
-        more.playButton = playButton
-        more.endButton = endButton
     # ======= ---- ======= #
-
-    # ======= click ======= #
-    def click(more, _):
-        global pause
-        if not pause:
-            more.place(x=415, y=342, anchor="center")
-            more.lift()
-            more.playButton.configure(text="  L\n  E\n  A\nS D\nH E\nO R\nW B\n  O\n  A\n  R\n  D", font=(FONT, 14))
-            more.endButton.configure(text="  G\nO I\nP T\nE H\nN U\n  B", font=(FONT, 18))
-        else:
-            more.place_forget()
-            more.playButton.configure(text="P\nL\nA\nY", font=(FONT, 28))
-            more.endButton.configure(text="E\nN\nD", font=(FONT, 28))
-        pause = not pause
-    # ======= ----- ======= #
 # ======= ---- --- ======= #
 
 # ======= header ======= #
@@ -376,7 +322,7 @@ class Score(CTkFrame):
 class Side(CTkFrame):
 
     # ======= init ======= #
-    def __init__(side, master):
+    def __init__(side, master, more):
         # ======= setup ======= #
         super().__init__(
             master,
@@ -385,17 +331,33 @@ class Side(CTkFrame):
             border_width=5,
             corner_radius=35,
             width=100, 
-            height=555, 
+            height=670, 
         )
         # ======= ----- ======= #
 
         # ======= grid setup ======= #
         side.columnconfigure(0, weight=1, uniform="a")
-        side.rowconfigure((0, 1), weight=1, uniform="a")
+        side.rowconfigure(0, weight=20, uniform="a")
+        side.rowconfigure((1, 2), weight=57, uniform="a")
         side.grid_propagate(False)
         # ======= ---- ----- ======= #
 
         # ======= gui ======= #
+        side.moreButton = CTkButton(
+            side, 
+            text="✨", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=side.click
+        )
+        side.moreButton.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
+        side.more = more
+
         side.play = CTkButton(
             side, 
             text="P\nL\nA\nY", 
@@ -408,7 +370,7 @@ class Side(CTkFrame):
             font=(FONT, 28),
             command=master.play
         )
-        side.play.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
+        side.play.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
         
         side.end = CTkButton(
             side, 
@@ -422,13 +384,30 @@ class Side(CTkFrame):
             font=(FONT, 28),
             command=master.end
         )
-        side.end.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
+        side.end.grid(column=0, row=2, sticky="nsew", padx=19, pady=19)
         # ======= --- ======= #
 
         # ======= place ======= #
-        side.place(x=72.5, y=400, anchor="center")
+        side.place(x=72.5, y=342, anchor="center")
         # ======= ----- ======= #
     # ======= ---- ======= #
+
+    # ======= click ======= #
+    def click(side):
+        global pause
+        if not pause:
+            side.more.place(x=415, y=342, anchor="center")
+            side.more.lift()
+            side.play.configure(text="  L\n  E\n  A\nS D\nH E\nO R\nW B\n  O\n  A\n  R\n  D", font=(FONT, 14))
+            side.end.configure(text="  G\nO I\nP T\nE H\nN U\n  B", font=(FONT, 18))
+            side.moreButton.configure(text="🎮")
+        else:
+            side.more.place_forget()
+            side.play.configure(text="P\nL\nA\nY", font=(FONT, 28))
+            side.end.configure(text="E\nN\nD", font=(FONT, 28))
+            side.moreButton.configure(text="✨")
+        pause = not pause
+    # ======= ----- ======= #
 # ======= ---- --- ======= #
 
 # ======= game screen ======= #
