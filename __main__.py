@@ -600,9 +600,9 @@ class Block:
             textvariable=block.var, 
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
+            font=(FONT, 28 if block.power <= 13 else 24),
             justify="center", 
             anchor="center",
-            font=(FONT, 28),
             width=1,
             height=1,
             corner_radius=35,
@@ -648,8 +648,11 @@ class Block:
     # ======= set ======= #
     def set(block) -> None:
         block.var.set(2**block.power)
-        block.cell.configure(fg_color=COLORS[block.power])
-        block.cell.configure(text_color="#ffffff" if block.power > 2 else "#756452")
+        block.cell.configure(
+            fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
+            text_color="#ffffff" if block.power > 2 else "#756452", 
+            font=(FONT, 28 if block.power <= 13 else 24)
+        )
         grid[block.pos] = block
         matrix[block.pos] = block.power
     # ======= --- ======= #
