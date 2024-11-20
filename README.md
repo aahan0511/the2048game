@@ -3,12 +3,6 @@ This is the Python clone for 2048.
 
 ## Table Of Contents
 - [Status](#status)
-    - [Help ❔](#help-)
-    - [Show Leaderboard 🏅](#show-leaderboard-)
-    - [Undo 🔙](#undo-)
-    - [Hint 💡](#hint-)
-    - [Star ⭐](#star-)
-    - [Open Folder 📂](#open-folder-)
 - [Inspiration](#inspiration)
 - [How To Play](#how-to-play)
 - [Installation](#installation)
