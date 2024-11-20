@@ -20,10 +20,7 @@ This is the Python clone for 2048.
 
 ## Status
 > [!NOTE]
-> The project is not production ready, but is functional.
-
-> [!NOTE]
-> The slide, and show leaderboard function are not ready.
+> The project is not production ready, but is functional. Some functions are not yet ready.
 
 ## [Inspiration](https://github.com/gabrielecirulli/2048 "2048 on GitHub")
 The original 2048 was made by [Gabriele Cirulli](https://github.com/gabrielecirulli "Gabriele Cirulli's GitHub") in JavaScript and CSS. If you want to play the actual game: [`play2048.co`](https://play2048.co/ "2048 website"). 
