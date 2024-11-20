@@ -8,6 +8,7 @@ from tkinter import Event
 from PIL import Image, ImageTk
 from random import randint, choice
 from webbrowser import open as openWeb
+from datetime import datetime
 # ======= ------- ======= #
 
 # ======= constants ======= #
@@ -106,6 +107,10 @@ class App(CTk):
         key = event.keysym
         # ======= ------------ ======= #
 
+        # ======= exception ======= #
+        if showingLoss or showingWin: return
+        # ======= --------- ======= #
+
         # ======= movement switchcase ======= #
         if key == "Left" or key == "a":
             for cell in grid:
@@ -159,8 +164,9 @@ class App(CTk):
             global ongoing
             if ongoing:
                 ongoing = False
-                cursor.execute(f"INSERT INTO Scores VALUES (DATETIME('now'), {root.scoreVar.get()}, {2**max(matrix)})") 
-                conn.commit()
+                if root.scoreVar.get() != 0:
+                    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now()}', {root.scoreVar.get()}, {2**max(matrix)})") 
+                    conn.commit()
                 for cell in grid: 
                     if cell: 
                         cell.destroy()
@@ -176,7 +182,7 @@ class App(CTk):
         else:
             openWeb("https://github.com/aahan0511/the2048game")
         # ======= ---- ------ ======= #
-    # ======= ------- ======= #
+    # ======= --- ======= #
     
     # ======= play ======= #
     def play(root, _: Event = None) -> None:
@@ -191,9 +197,14 @@ class App(CTk):
 
         # ======= show leaderboard ======= #
         else:
-            pass #TODO: Add leaderboard function
+            pass #TODO: add leaderboard function
         # ======= ---- ----------- ======= #
-    # ======= ----- ======= #
+    # ======= ---- ======= #
+
+    # ======= score increaser ======= #
+    def increase(root, increament: int) -> None:
+        root.scoreVar.set(root.scoreVar.get()+increament)
+    # ======= ----- --------- ======= #
 # ======= ------ ======= #
 
 # ======= more box ======= #
@@ -658,59 +669,129 @@ class Block:
     # ======= --- ======= #
 
     # ======= slide ======= #
-    def slide(block, direction: str) -> None:
-        # ======= left ======= #
-        if direction == "left" and block.pos%4 != 0:
-            final = block.x - 136.25 
-            def left():
-                block.x -= 136.25/SPEED
-                block.place()
-                if block.x != final:
-                    left()
-            left()
-        # ======= ---- ======= #
-
-        # ======= right ======= #
-        elif direction == "right" and block.pos%4 != 3:
-            final = block.x + 136.25 
-            def right():
-                block.x += 136.25/SPEED
-                block.place()
-                if block.x != final:
-                    right()
-            right()
-        # ======= ----- ======= #
-
-        # ======= up ======= #
-        elif direction == "up" and block.pos//4 != 0:
-            final = block.y + 136.25 
-            def up():
-                block.y += 136.25/SPEED
-                block.place()
-                if block.y != final:
-                    up()
-            up()
-        # ======= -- ======= #
-
-        # ======= down ======= #
-        elif direction == "down" and block.pos//4 != 3:
-            final = block.y + 136.25 
-            def down():
-                block.y += 136.25/SPEED
-                block.place()
-                if block.y != final:
-                    down()
-            down()
-        # ======= ---- ======= #
+    def slide(block, pos: int) -> None:
+        block.cell.place(
+            x=(pos%4)*136.25+73.125,
+            y=(pos//4)*136.25+73.125,
+            anchor="center"
+        ) #TODO: add slide function
     # ======= ----- ======= #
 
     # ======= merge ======= #           
-    def merge(self, direction: str) -> None:
-        pass #TODO: add merge function
+    def merge(block, direction: str) -> None:
+        # ======= global variable ======= #
+        global movement
+        # ======= ------ -------- ======= #
+
+        # ======= direction switch case ======= #
+        match direction:
+            # ======= left ======= #
+            case "left":
+                if block.pos%4 == 0: return
+                cell = grid[block.pos-1]
+                if cell == None:
+                    block.slide(block.pos-1)
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    grid[block.pos-1] = block
+                    matrix[block.pos-1] = block.power
+                    block.pos -= 1
+                    block.merge("left")
+                    movement = True
+                elif cell.power == block.power:
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    block.slide(block.pos-1)
+                    block.master.parent.increase(2**(cell.power+1))
+                    block.destroy()
+                    cell.power += 1
+                    cell.set()
+                    cell.merge("left")
+                    movement = True
+            # ======= ---- ======= #
+
+            # ======= right ======= #
+            case "right":
+                if block.pos%4 == 3: return
+                cell = grid[block.pos+1]
+                if cell == None:
+                    block.slide(block.pos+1)
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    grid[block.pos+1] = block
+                    matrix[block.pos+1] = block.power
+                    block.pos += 1
+                    block.merge("right")
+                    movement = True
+                elif cell.power == block.power:
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    block.slide(block.pos+1)
+                    block.master.parent.increase(2**(cell.power+1))
+                    block.destroy()
+                    cell.power += 1
+                    cell.set()
+                    cell.merge("right")
+                    movement = True
+            # ======= ----- ======= #
+
+            # ======= up ======= #
+            case "up":
+                if block.pos//4 == 0: return
+                cell = grid[block.pos-4]
+                if cell == None:
+                    block.slide(block.pos-4)
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    grid[block.pos-4] = block
+                    matrix[block.pos-4] = block.power
+                    block.pos -= 4
+                    block.merge("up")
+                    movement = True
+                elif cell.power == block.power:
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    block.slide(block.pos-4)
+                    block.master.parent.increase(2**(cell.power+1))
+                    block.destroy()
+                    cell.power += 1
+                    cell.set()
+                    cell.merge("up")
+                    movement = True
+            # ======= -- ======= #
+
+            # ======= down ======= #
+            case "down":
+                if block.pos//4 == 3: return
+                cell = grid[block.pos+4]
+                if cell == None:
+                    block.slide(block.pos+4)
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    grid[block.pos+4] = block
+                    matrix[block.pos+4] = block.power
+                    block.pos += 4
+                    block.merge("down")
+                    movement = True
+                elif cell.power == block.power:
+                    grid[block.pos] = None
+                    matrix[block.pos] = 0
+                    block.slide(block.pos+4)
+                    block.master.parent.increase(2**(cell.power+1))
+                    block.destroy()
+                    cell.power += 1
+                    cell.set()
+                    cell.merge("down")
+                    movement = True
+            # ======= ---- ======= #
+        # ======= --------- ------ ---- ======= #
     # ======= ----- ======= #
 # ======= ----- ======= #
 
 # ======= execution ======= #
 app = App()
+if app.scoreVar.get() != 0:
+    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now()}', {app.scoreVar.get()}, {2**max(matrix)})") 
+    conn.commit()
 conn.close()
 # ======= --------- ======= #
