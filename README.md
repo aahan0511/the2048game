@@ -3,6 +3,12 @@ This is the Python clone for 2048.
 
 ## Table Of Contents
 - [Status](#status)
+    - [Help ❔](#help-)
+    - [Show Leaderboard 🏅](#show-leaderboard-)
+    - [Undo 🔙](#undo-)
+    - [Hint 💡](#hint-)
+    - [Star ⭐](#star-)
+    - [Open Folder 📂](#open-folder-)
 - [Inspiration](#inspiration)
 - [How To Play](#how-to-play)
 - [Installation](#installation)
@@ -21,6 +27,24 @@ This is the Python clone for 2048.
 ## Status
 > [!NOTE]
 > The project is not production ready, but is functional. Some functions are not yet ready.
+
+### Help ❔
+> The help button [❔], is not ready. It is not functional. It should show How To Play instructions.
+
+### Show Leaderboard 🏅
+> The show leaderbord button [🏅], is not ready. It will show the score history.
+
+### Undo 🔙
+> The undo button [🔙], is not functional. It will go back one move.
+
+### Hint 💡
+> The hint button [💡], is not ready. It will show a suggested move.
+
+### Star ⭐
+> The star button [⭐], is not made. It will make a link to star the repository.
+
+### Open Folder 📂
+> The open folder [📂], is not ready for non-windows. It opens the data folder in file explorer.
 
 ## [Inspiration](https://github.com/gabrielecirulli/2048 "2048 on GitHub")
 The original 2048 was made by [Gabriele Cirulli](https://github.com/gabrielecirulli "Gabriele Cirulli's GitHub") in JavaScript and CSS. If you want to play the actual game: [`play2048.co`](https://play2048.co/ "2048 website"). 

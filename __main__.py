@@ -1,6 +1,6 @@
 # ======= imports ======= #
 from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton
-from os import path as osPath, makedirs, getlogin
+from os import path as osPath, makedirs, getlogin, system
 from sqlite3 import connect
 from sys import path
 from _tkinter import TclError
@@ -170,7 +170,8 @@ class App(CTk):
                 for cell in grid: 
                     if cell: 
                         cell.destroy()
-                root.highVar.set(cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
+                highscore = cursor.execute(f'SELECT MAX(Score) FROM Scores').fetchone()[0]
+                root.highVar.set(highscore if highscore != None else 0)
                 root.scoreVar.set(0)
             if showingLoss:
                 root.game.loseNotifier.clear()
@@ -178,9 +179,10 @@ class App(CTk):
                 root.game.winNotifier.clear()
         # ======= --- ======= #
 
-        # ======= open github ======= #
+        # ======= open folder ======= #
         else:
-            openWeb("https://github.com/aahan0511/the2048game")
+            try: system(f'start %windir%\\explorer.exe "{DIRECTORY}"')
+            except: pass #TODO: add open folder for non-windows
         # ======= ---- ------ ======= #
     # ======= --- ======= #
     
@@ -221,6 +223,14 @@ class More(CTkFrame):
             width=555,
             corner_radius=35
         )
+    # ======= ---- ======= #
+
+    # ======= help ======= #
+    def help(more) -> None:
+        if pause:
+            pass #TODO: add help function
+        else:
+            pass #TODO: add help for non-pause
     # ======= ---- ======= #
 # ======= ---- --- ======= #
 
@@ -364,8 +374,8 @@ class Side(CTkFrame):
 
         # ======= grid setup ======= #
         side.columnconfigure(0, weight=1, uniform="a")
-        side.rowconfigure(0, weight=20, uniform="a")
-        side.rowconfigure((1, 2), weight=57, uniform="a")
+        side.rowconfigure((0, 1, 3, 4, 5, 6), weight=100, uniform="a")
+        side.rowconfigure((2), weight=70, uniform="a")
         side.grid_propagate(False)
         # ======= ---- ----- ======= #
 
@@ -385,9 +395,23 @@ class Side(CTkFrame):
         side.moreButton.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
         side.more = more
 
+        side.help = CTkButton(
+            side, 
+            text="❔", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=more.help
+        )
+        side.help.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
+
         side.play = CTkButton(
             side, 
-            text="P\nL\nA\nY", 
+            text="🎮", 
             fg_color="#faf8f0", 
             text_color="#988a86", 
             corner_radius=25,
@@ -397,11 +421,39 @@ class Side(CTkFrame):
             font=(FONT, 28),
             command=master.play
         )
-        side.play.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
+        side.play.grid(column=0, row=3, sticky="nsew", padx=19, pady=19)
+
+        side.undo = CTkButton(
+            side, 
+            text="🔙", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=master.game.undo
+        )
+        side.undo.grid(column=0, row=4, sticky="nsew", padx=19, pady=19)
+
+        side.hint = CTkButton(
+            side, 
+            text="💡", 
+            fg_color="#faf8f0", 
+            text_color="#988a86", 
+            corner_radius=25,
+            hover_color="#eae7d9",
+            border_color="#eae7d9",
+            border_width=3,
+            font=(FONT, 28),
+            command=master.game.hint
+        )
+        side.hint.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
         
         side.end = CTkButton(
             side, 
-            text="E\nN\nD", 
+            text="❌", 
             fg_color="#faf8f0", 
             text_color="#988a86", 
             corner_radius=25,
@@ -411,7 +463,7 @@ class Side(CTkFrame):
             font=(FONT, 28),
             command=master.end
         )
-        side.end.grid(column=0, row=2, sticky="nsew", padx=19, pady=19)
+        side.end.grid(column=0, row=6, sticky="nsew", padx=19, pady=19)
         # ======= --- ======= #
 
         # ======= place ======= #
@@ -425,13 +477,17 @@ class Side(CTkFrame):
         if not pause:
             side.more.place(x=415, y=342, anchor="center")
             side.more.lift()
-            side.play.configure(text="  L\n  E\n  A\nS D\nH E\nO R\nW B\n  O\n  A\n  R\n  D", font=(FONT, 14))
-            side.end.configure(text="  G\nO I\nP T\nE H\nN U\n  B", font=(FONT, 18))
-            side.moreButton.configure(text="🎮")
+            side.play.configure(text="🏅")
+            side.undo.configure(text="🌐")
+            side.hint.configure(text="⭐")
+            side.end.configure(text="📂")
+            side.moreButton.configure(text="🎲")
         else:
             side.more.place_forget()
-            side.play.configure(text="P\nL\nA\nY", font=(FONT, 28))
-            side.end.configure(text="E\nN\nD", font=(FONT, 28))
+            side.play.configure(text="🎮")
+            side.undo.configure(text="🔙")
+            side.hint.configure(text="💡")
+            side.end.configure(text="❌")
             side.moreButton.configure(text="✨")
         pause = not pause
     # ======= ----- ======= #
@@ -499,6 +555,32 @@ class GameScreen(CTkFrame):
             showingLoss = True
             screen.loseNotifier = Notification(screen, False)
     # ======= --- ======= #
+
+    # ======= undo ======= #
+    def undo(screen) -> None:
+        # ======= undo ======= #
+        if not pause:
+            pass #TODO: add undo function
+        # ======= ---- ======= #
+
+        # ======= open website ======= #
+        else:
+            openWeb("https://github.com/aahan0511/the2048game")
+        # ======= ---- ------- ======= #
+    # ======= ---- ======= #
+
+    # ======= hint ======= #
+    def hint(screen) -> None:
+        # ======= hint ======= #
+        if not pause:
+            pass #TODO: add hint function
+        # ======= ---- ======= #
+
+        # ======= star ======= #
+        else:
+            pass #TODO: add star function
+        # ======= ---- ======= #
+    # ======= ---- ======= #
 # ======= ---- ------ ======= #
 
 # ======= notification ======= #
@@ -790,8 +872,11 @@ class Block:
 
 # ======= execution ======= #
 app = App()
+
+# ======= database closure ======= #
 if app.scoreVar.get() != 0:
     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now()}', {app.scoreVar.get()}, {2**max(matrix)})") 
     conn.commit()
 conn.close()
+# ======= -------- ------- ======= #
 # ======= --------- ======= #
