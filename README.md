@@ -3,6 +3,8 @@ This is the Python clone for 2048.
 
 ## Table Of Contents
 - [Status](#status)
+    - [Bugs](#bugs)
+    - [Features](#features)
 - [Inspiration](#inspiration)
 - [How To Play](#how-to-play)
 - [Installation](#installation)
@@ -12,8 +14,6 @@ This is the Python clone for 2048.
 - [Requirements](#requirements)
     - [Font](#font)
     - [Modules](#modules)
-        - [Only For Windows](#only-for-windows)
-        - [Only For non-Windows](#only-for-non-windows)
 - [Notes](#notes)
 - [Commit History](#commit-history)
 - [License](#license)
@@ -22,22 +22,29 @@ This is the Python clone for 2048.
 > [!NOTE]
 > The project is not production ready, but is functional. Some functions are not yet ready.
 
-### Help ❔
-> The help button [❔], is not ready. It is not functional. It should show How To Play instructions.
+### Bugs
 
-### Show Leaderboard 🏅
+> [!IMPORTANT]
+> When there are 4 identical blocks in line, they all tend to combine, not that for example two identical blocks and one block that is identical to their sum is in line, they would also tend to merge.
+
+### Features
+
+#### Help ❔
+> The help button [❔], is not ready. It should show How To Play instructions.
+
+#### Show Leaderboard 🏅
 > The show leaderbord button [🏅], is not ready. It will show the score history.
 
-### Undo 🔙
-> The undo button [🔙], is not functional. It will go back one move.
+#### Undo 🔙
+> The undo button [🔙], is not ready. It will go back one move.
 
-### Hint 💡
+#### Hint 💡
 > The hint button [💡], is not ready. It will show a suggested move.
 
-### Star ⭐
-> The star button [⭐], is not made. It will make a link to star the repository.
+#### Star ⭐
+> The star button [⭐], is not ready. It will make a link to star the repository.
 
-### Open Folder 📂
+#### Open Folder 📂
 > The open folder [📂], is not ready for non-windows. It opens the data folder in file explorer.
 
 ## [Inspiration](https://github.com/gabrielecirulli/2048 "2048 on GitHub")
