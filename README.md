@@ -76,7 +76,7 @@ This requires `Python 3.10+`, atleast that's what I think.
 This also requires all the [needed modules](requirements.txt "requirements"), for which you need to do 
 > `pip install -r requirements.txt`
 
-This will install all needed modules and libraries.
+This will install all needed modules and libraries, see [required modules](#modules) for more information.
 
 > [!TIP]
 > You might even edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
