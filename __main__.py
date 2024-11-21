@@ -185,6 +185,22 @@ class App(CTk):
                         entry_text_color="#ffffff"
                     )
 
+                    try:
+                        from ctypes import windll, byref, sizeof, c_int
+                        windll.dwmapi.DwmSetWindowAttribute(
+                            windll.user32.GetParent(name.winfo_id()), 
+                            36, 
+                            byref(c_int(0x00f0f8fa)), 
+                            sizeof(c_int)
+                        )
+                        windll.dwmapi.DwmSetWindowAttribute(
+                            windll.user32.GetParent(name.winfo_id()), 
+                            35, 
+                            byref(c_int(0x0097acbd)), 
+                            sizeof(c_int)
+                        )
+                    except ImportError: pass
+
                     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {root.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
                     conn.commit()
                 for cell in grid: 
@@ -998,6 +1014,23 @@ if app.scoreVar.get() != 0:
         entry_fg_color="#bdac97",
         entry_text_color="#ffffff"
     )
+
+    try:
+        from ctypes import windll, byref, sizeof, c_int
+        windll.dwmapi.DwmSetWindowAttribute(
+            windll.user32.GetParent(name.winfo_id()), 
+            36, 
+            byref(c_int(0x00f0f8fa)), 
+            sizeof(c_int)
+        )
+        windll.dwmapi.DwmSetWindowAttribute(
+            windll.user32.GetParent(name.winfo_id()), 
+            35, 
+            byref(c_int(0x0097acbd)), 
+            sizeof(c_int)
+        )
+    except ImportError: pass
+    
     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {app.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
     conn.commit()
 conn.close()
