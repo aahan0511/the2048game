@@ -14,7 +14,6 @@ This is the Python clone for 2048.
 - [Requirements](#requirements)
     - [Font](#font)
     - [Modules](#modules)
-- [Notes](#notes)
 - [Commit History](#commit-history)
 - [License](#license)
 
@@ -26,6 +25,10 @@ This is the Python clone for 2048.
 
 > [!IMPORTANT]
 > When there are 4 identical blocks in line, they all tend to combine, not that for example two identical blocks and one block that is identical to their sum is in line, they would also tend to merge.
+
+> [!IMPORTANT]
+> If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
+> In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section and change the first part of `DIRECTORY`.
 
 ### Features
 
@@ -111,11 +114,6 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 comment-out [`pywinstyles`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/requirements.txt#L5C1-L5C12) in [requirements.txt](requirements.txt), 
 > [!NOTE]
 > This will result in opaque and broken, winning and losing screen. If you have any suggestion to fix this on non-Windows computers, please suggest in [this discussion](https://github.com/aahan0511/the2048game/discussions/4 "Ideas Discussion").
-
-## Notes
-> [!IMPORTANT]
-> If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
-> In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section and change the first part of `DIRECTORY`.
 
 ## Commit History 
 The [commit activity](https://github.com/aahan0511/the2048game/graphs/commit-activity) is linked here.
