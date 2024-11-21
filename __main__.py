@@ -1,5 +1,5 @@
 # ======= imports ======= #
-from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview
+from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview, CTkInputDialog
 from os import path as osPath, makedirs, getlogin, system
 from sqlite3 import connect
 from sys import path
@@ -43,7 +43,7 @@ if not osPath.exists(DIRECTORY):
 conn = connect(f"{DIRECTORY}\\2048.db")
 cursor = conn.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER)")
+cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER, NAME TEXT)")
 # ======= --------- --- -------- -------- ======= #
 
 # ======= window ======= #
@@ -173,7 +173,19 @@ class App(CTk):
             if ongoing:
                 ongoing = False
                 if root.scoreVar.get() != 0:
-                    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now()}', {root.scoreVar.get()}, {2**max(matrix)})") 
+                    name = CTkInputDialog(
+                        text="Your game has ended; what name should we save your score with?",
+                        title="the2048game: NAME REQUEST",
+                        fg_color="#bdac97",
+                        button_fg_color="#faf8f0",
+                        button_hover_color="#eae7d9",
+                        button_text_color="#988a86",
+                        entry_border_color="#9b8878",
+                        entry_fg_color="#bdac97",
+                        entry_text_color="#ffffff"
+                    )
+
+                    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {root.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
                     conn.commit()
                 for cell in grid: 
                     if cell: 
@@ -235,13 +247,10 @@ class More(CTkFrame):
         more.pack_propagate(False)
         # ======= ----- ======= #
 
-        # ======= variables ======= #
+        # ======= gui ======= #
         more.showingLeader = False
-        # ======= --------- ======= #
-
-        # ======= leaderboard ======= #
-        more.leaderboard = Leaderboard(more, cursor.execute(f'SELECT * FROM Scores').fetchall())
-        # ======= ----------- ======= #
+        more.leaderboard = Leaderboard(more)
+        # ======= --- ======= #
     # ======= ---- ======= #
 
     # ======= help ======= #
@@ -269,8 +278,7 @@ class More(CTkFrame):
 class Leaderboard(CTkTabview):
 
     # ======= init ======= #
-    def __init__(board, master: More, values: list[tuple[str | int]]) -> None:
-        # ======= setup ======= #
+    def __init__(board, master: More) -> None:
         super().__init__(
             master,
             fg_color="#9b8878",
@@ -279,35 +287,45 @@ class Leaderboard(CTkTabview):
             segmented_button_selected_hover_color="#9b8878",
             segmented_button_unselected_hover_color="#bdac97",
             segmented_button_unselected_color="#faf8f0",
-            text_color="#878787",
+            text_color="#878787"
         )
-
-        print(len(values))
-        board.length = len(values)//TABLE_LEN+(1 if len(values)%TABLE_LEN != 0 else 0)
-        # ======= ----- ======= #
-
-        # ======= tab and table creation ======= #
-        for tabNum in range(board.length):
-            tabName = str(tabNum+1)
-
-            board.add(tabName)
-
-            CTkTable(
-                board.tab(tabName),
-                column=3,
-                values=[("TIME", "SCORE", "BLOCK")]+values[TABLE_LEN*tabNum:TABLE_LEN*(tabNum+1)],
-                corner_radius=35,
-                header_color="#bdac97",
-                text_color="#756452",
-                colors=["#eae7d9", "#faf8f0"],
-                row=TABLE_LEN
-            ).pack(expand=True, fill="both")
-        # ======= --- --- ----- -------- ======= #
+        board.values = None
     # ======= ---- ======= #
+
+    # ======= refresh ======= #
+    def refresh(board) -> None:
+        values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[2], reverse=True)
+
+        if board.values != values or board.values == None:
+            if board.values != None:
+                for tab in range(1, board.length+1):
+                    board.delete(str(tab))
+
+            board.length = len(values)//TABLE_LEN + (1 if len(values)%TABLE_LEN != 0 else 0)
+
+            for tabNum in range(board.length):
+                tabName = str(tabNum+1)
+
+                board.add(tabName)
+
+                CTkTable(
+                    board.tab(tabName),
+                    column=4,
+                    values=[("TIME", "SCORE", "BLOCK", "NAME")]+values[TABLE_LEN*tabNum:TABLE_LEN*(tabNum+1)],
+                    corner_radius=35,
+                    header_color="#bdac97",
+                    text_color="#756452",
+                    colors=["#eae7d9", "#faf8f0"],
+                    row=TABLE_LEN
+                ).pack(expand=True, fill="both")
+
+            board.values = values
+    # ======= ------- ======= #
 
     # ======= show ======= #
     def show(board) -> None:
         board.pack(expand=True, fill="both", padx=19, pady=19)
+        board.refresh()
     # ======= ---- ======= #
 
     # ======= hide ======= #
@@ -969,7 +987,18 @@ app = App()
 
 # ======= database closure ======= #
 if app.scoreVar.get() != 0:
-    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now()}', {app.scoreVar.get()}, {2**max(matrix)})") 
+    name = CTkInputDialog(
+        text="Your game has ended; what name should we save your score with?",
+        title="the2048game: NAME REQUEST",
+        fg_color="#bdac97",
+        button_fg_color="#faf8f0",
+        button_hover_color="#eae7d9",
+        button_text_color="#988a86",
+        entry_border_color="#9b8878",
+        entry_fg_color="#bdac97",
+        entry_text_color="#ffffff"
+    )
+    cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {app.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
     conn.commit()
 conn.close()
 # ======= -------- ------- ======= #
