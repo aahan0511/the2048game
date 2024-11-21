@@ -109,6 +109,10 @@ class App(CTk):
 
         # ======= exceptions and restart ======= #
         if showingWin or showingLoss: return
+
+        for cell in grid:
+            if cell != None:
+                cell.mix = True
         # ======= --------- --- ------- ======= #
 
         # ======= movement switchcase ======= #
@@ -705,6 +709,7 @@ class Block:
             bg_color="transparent",
         )
         block.master = master
+        block.mix = True
         # ======= ----- ======= #
 
         # ======= position chooser ======= #
@@ -787,7 +792,7 @@ class Block:
                     block.pos -= 1
                     block.merge("left")
                     movement = True
-                elif cell.power == block.power:
+                elif cell.power == block.power and cell.mix and block.mix:
                     grid[block.pos] = None
                     matrix[block.pos] = 0
                     block.slide(block.pos-1)
@@ -795,6 +800,7 @@ class Block:
                     block.destroy()
                     cell.power += 1
                     cell.set()
+                    cell.mix = False
                     cell.merge("left")
                     movement = True
             # ======= ---- ======= #
@@ -812,7 +818,7 @@ class Block:
                     block.pos += 1
                     block.merge("right")
                     movement = True
-                elif cell.power == block.power:
+                elif cell.power == block.power and cell.mix and block.mix:
                     grid[block.pos] = None
                     matrix[block.pos] = 0
                     block.slide(block.pos+1)
@@ -820,6 +826,7 @@ class Block:
                     block.destroy()
                     cell.power += 1
                     cell.set()
+                    cell.mix = False
                     cell.merge("right")
                     movement = True
             # ======= ----- ======= #
@@ -837,7 +844,7 @@ class Block:
                     block.pos -= 4
                     block.merge("up")
                     movement = True
-                elif cell.power == block.power:
+                elif cell.power == block.power and cell.mix and block.mix:
                     grid[block.pos] = None
                     matrix[block.pos] = 0
                     block.slide(block.pos-4)
@@ -845,6 +852,7 @@ class Block:
                     block.destroy()
                     cell.power += 1
                     cell.set()
+                    cell.mix = False
                     cell.merge("up")
                     movement = True
             # ======= -- ======= #
@@ -862,7 +870,7 @@ class Block:
                     block.pos += 4
                     block.merge("down")
                     movement = True
-                elif cell.power == block.power:
+                elif cell.power == block.power and cell.mix and block.mix:
                     grid[block.pos] = None
                     matrix[block.pos] = 0
                     block.slide(block.pos+4)
@@ -870,6 +878,7 @@ class Block:
                     block.destroy()
                     cell.power += 1
                     cell.set()
+                    cell.mix = False
                     cell.merge("down")
                     movement = True
             # ======= ---- ======= #
