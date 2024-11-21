@@ -107,9 +107,9 @@ class App(CTk):
         key = event.keysym
         # ======= ------------ ======= #
 
-        # ======= exception ======= #
-        if showingLoss or showingWin: return
-        # ======= --------- ======= #
+        # ======= exceptions and restart ======= #
+        if showingWin or showingLoss: return
+        # ======= --------- --- ------- ======= #
 
         # ======= movement switchcase ======= #
         if key == "Left" or key == "a":
@@ -152,8 +152,10 @@ class App(CTk):
                         matching = True
             if not matching:
                 root.game.loss()
-        elif matrix.count(11) == 1:
+                root.game.loseNotifier.lift()
+        if matrix.count(11) == 1:
             root.game.win()
+            root.game.winNotifier.lift()
         # ======= ---- ------ ======= #
     # ======= --- ----- ======= #
 
@@ -545,7 +547,7 @@ class GameScreen(CTkFrame):
         if not showingLoss:
             global showingWin
             showingWin = True
-            screen.winNotifier = Notification(screen, True)    
+            screen.winNotifier = Notification(screen, True)
     # ======= --- ======= #
 
     # ======= loss ======= #
@@ -638,6 +640,7 @@ class Notification(CTkFrame):
                 corner_radius=35
             )
             notifier.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
+            notifier.lift()
             # ======= ----- ======= #
 
             # ======= gui ======= #
@@ -652,7 +655,7 @@ class Notification(CTkFrame):
             subtext = CTkLabel(
                 notifier,
                 font=(FONT, 20),
-                text="Press END to Continue",
+                text="Press ❌ to Continue",
                 text_color="#ffffff"
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
@@ -720,14 +723,18 @@ class Block:
             y=block.y,
             anchor="center"
         )
-        matrix[block.pos] = block.power
-        grid[block.pos] = block
         def grow(side):
             block.cell.configure(width=116.25-side, height=116.25-side, justify="center", anchor="center", corner_radius=35)
             if side > 0:
                 block.cell.after(1, lambda: grow(side-GROW_SPEED if side>=GROW_SPEED else 0))
                 block.cell.lift()
+                if showingLoss:
+                    block.cell.after(1, block.master.loseNotifier.lift)
+                if showingWin:
+                    block.cell.after(1, block.master.winNotifier.lift)
         grow(116.25)
+        matrix[block.pos] = block.power
+        grid[block.pos] = block 
     # ======= ----- ======= #
 
     # ======= destroy ======= #
