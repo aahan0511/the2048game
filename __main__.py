@@ -1,10 +1,11 @@
 # ======= imports ======= #
-from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton
+from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview
 from os import path as osPath, makedirs, getlogin, system
 from sqlite3 import connect
 from sys import path
 from _tkinter import TclError
 from tkinter import Event
+from CTkTable import CTkTable
 from PIL import Image, ImageTk
 from random import randint, choice
 from webbrowser import open as openWeb
@@ -23,6 +24,7 @@ PATHS = {
 FONT = "JetBrains Mono Medium"
 SPEED = 5
 GROW_SPEED = 3.6
+TABLE_LEN = 15
 # ======= --------- ======= #
 
 # ======= global variables ======= #
@@ -220,6 +222,7 @@ class More(CTkFrame):
 
     # ======= init ======= #
     def __init__(more, master: App) -> None:
+        # ======= setup ======= #
         super().__init__(
             master,
             border_color="#9c8978",
@@ -229,6 +232,16 @@ class More(CTkFrame):
             width=555,
             corner_radius=35
         )
+        more.pack_propagate(False)
+        # ======= ----- ======= #
+
+        # ======= variables ======= #
+        more.showingLeader = False
+        # ======= --------- ======= #
+
+        # ======= leaderboard ======= #
+        more.leaderboard = Leaderboard(more, cursor.execute(f'SELECT * FROM Scores').fetchall())
+        # ======= ----------- ======= #
     # ======= ---- ======= #
 
     # ======= help ======= #
@@ -243,7 +256,65 @@ class More(CTkFrame):
             openWeb("https://github.com/aahan0511/the2048game/discussions/5")
         # ======= ---- ======= #
     # ======= ---- ======= #
+
+    # ======= show leaderboard ======= #
+    def showLeaderboard(more) -> None:
+        if not more.showingLeader: more.leaderboard.show()
+        else: more.leaderboard.hide()
+        more.showingLeader = not more.showingLeader
+    # ======= ---- ----------- ======= #
 # ======= ---- --- ======= #
+
+# ======= leaderboard ======= #
+class Leaderboard(CTkTabview):
+
+    # ======= init ======= #
+    def __init__(board, master: More, values: list[tuple[str | int]]) -> None:
+        # ======= setup ======= #
+        super().__init__(
+            master,
+            fg_color="#9b8878",
+            segmented_button_fg_color="#756452",
+            segmented_button_selected_color="#eae7d9",
+            segmented_button_selected_hover_color="#9b8878",
+            segmented_button_unselected_hover_color="#bdac97",
+            segmented_button_unselected_color="#faf8f0",
+            text_color="#878787",
+        )
+
+        print(len(values))
+        board.length = len(values)//TABLE_LEN+(1 if len(values)%TABLE_LEN != 0 else 0)
+        # ======= ----- ======= #
+
+        # ======= tab and table creation ======= #
+        for tabNum in range(board.length):
+            tabName = str(tabNum+1)
+
+            board.add(tabName)
+
+            CTkTable(
+                board.tab(tabName),
+                column=3,
+                values=[("TIME", "SCORE", "BLOCK")]+values[TABLE_LEN*tabNum:TABLE_LEN*(tabNum+1)],
+                corner_radius=35,
+                header_color="#bdac97",
+                text_color="#756452",
+                colors=["#eae7d9", "#faf8f0"],
+                row=TABLE_LEN
+            ).pack(expand=True, fill="both")
+        # ======= --- --- ----- -------- ======= #
+    # ======= ---- ======= #
+
+    # ======= show ======= #
+    def show(board) -> None:
+        board.pack(expand=True, fill="both", padx=19, pady=19)
+    # ======= ---- ======= #
+
+    # ======= hide ======= #
+    def hide(board) -> None:
+        board.pack_forget()
+    # ======= ---- ======= #
+# ======= ----------- ======= #
 
 # ======= header ======= #
 class Header(CTkFrame):
@@ -591,7 +662,7 @@ class GameScreen(CTkFrame):
 
         # ======= show leaderboard ======= #
         else:
-            pass #TODO: add show leaderboard function
+            screen.parent.more.showLeaderboard()
         # ======= ---- ======= #
     # ======= ---- ======= #
 # ======= ---- ------ ======= #

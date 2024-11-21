@@ -28,13 +28,10 @@ This is the Python clone for 2048.
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section and change the first part of `DIRECTORY`.
 
-### Features
+### Not Ready Features
 
 #### Help ❔
 > The help button [❔], is not ready. It should show How To Play instructions.
-
-#### Show Leaderboard 🏅
-> The show leaderbord button [🏅], is not ready. It will show the score history.
 
 #### Undo 🔙
 > The undo button [🔙], is not ready. It will go back one move.
@@ -104,6 +101,8 @@ The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono
 [customtkinter](https://github.com/TomSchimansky/CustomTkinter) - `pip install customtkinter`
 
 [pillow (PIL)](https://github.com/python-pillow/Pillow) - `pip install pillow`
+
+[CTkTable](https://github.com/Akascape/CTkTable) - `pip install CTkTable`
 
 #### Only For Windows:
 [pywinstyles](https://github.com/Akascape/py-window-styles) - `pip install pywinstyles`
