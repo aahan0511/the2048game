@@ -28,6 +28,10 @@ This is the Python clone for 2048.
 > If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
 > In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section and change the first part of `DIRECTORY`.
 
+> [!IMPORTANT]
+> If you get an error related to tables in sqlite3, go to ✨, and then 📂. Then close the app. After which you may delete the database called `2048.db`. This will erase all old data, but will fix the bug.
+> This ussually happens due to version change.
+
 ### Not Ready Features
 
 #### Help ❔
