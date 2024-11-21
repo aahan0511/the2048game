@@ -203,9 +203,9 @@ class App(CTk):
                 ongoing = True
         # ======= ---- ======= #
 
-        # ======= show leaderboard ======= #
+        # ======= settings ======= #
         else:
-            pass #TODO: add leaderboard function
+            pass #TODO: add settings function
         # ======= ---- ----------- ======= #
     # ======= ---- ======= #
 
@@ -233,10 +233,15 @@ class More(CTkFrame):
 
     # ======= help ======= #
     def help(more) -> None:
+        # ======= help ======= #
         if pause:
             pass #TODO: add help function
+        # ======= ---- ======= #
+
+        # ======= star ======= #
         else:
-            pass #TODO: add help for non-pause
+            openWeb("https://github.com/aahan0511/the2048game/discussions/5")
+        # ======= ---- ======= #
     # ======= ---- ======= #
 # ======= ---- --- ======= #
 
@@ -403,7 +408,7 @@ class Side(CTkFrame):
 
         side.help = CTkButton(
             side, 
-            text="❔", 
+            text="⭐", 
             fg_color="#faf8f0", 
             text_color="#988a86", 
             corner_radius=25,
@@ -483,13 +488,15 @@ class Side(CTkFrame):
         if not pause:
             side.more.place(x=415, y=342, anchor="center")
             side.more.lift()
-            side.play.configure(text="🏅")
+            side.help.configure(text="❔")
+            side.play.configure(text="⚙️")
             side.undo.configure(text="🌐")
-            side.hint.configure(text="⭐")
+            side.hint.configure(text="🏅")
             side.end.configure(text="📂")
             side.moreButton.configure(text="🎲")
         else:
             side.more.place_forget()
+            side.help.configure(text="⭐")
             side.play.configure(text="🎮")
             side.undo.configure(text="🔙")
             side.hint.configure(text="💡")
@@ -582,9 +589,9 @@ class GameScreen(CTkFrame):
             pass #TODO: add hint function
         # ======= ---- ======= #
 
-        # ======= star ======= #
+        # ======= show leaderboard ======= #
         else:
-            pass #TODO: add star function
+            pass #TODO: add show leaderboard function
         # ======= ---- ======= #
     # ======= ---- ======= #
 # ======= ---- ------ ======= #
