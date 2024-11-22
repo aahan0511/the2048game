@@ -243,6 +243,19 @@ class App(CTk):
     def increase(root, increament: int) -> None:
         root.scoreVar.set(root.scoreVar.get()+increament)
     # ======= ----- --------- ======= #
+
+    # ======= undo ======= #
+    def undo(screen) -> None:
+        # ======= undo ======= #
+        if not pause:
+            pass #TODO: add undo function
+        # ======= ---- ======= #
+
+        # ======= open website ======= #
+        else:
+            openWeb("https://github.com/aahan0511/the2048game")
+        # ======= ---- ------- ======= #
+    # ======= ---- ======= #
 # ======= ------ ======= #
 
 # ======= more box ======= #
@@ -269,9 +282,8 @@ class More(CTkFrame):
         more.columnconfigure((0, 1), weight=1, uniform="a")
         # ======= ----- ======= #
 
-        # ======= gui ======= #
+        # ======= leaderboard ======= #
         more.showingLeader = False
-
         more.leaderboardFilter = StringVar(value="score")
         more.leaderboardSize = StringVar(value=TABLE_LEN)
         more.leaderboard = Leaderboard(more, more.leaderboardFilter, more.leaderboardSize)
@@ -299,7 +311,11 @@ class More(CTkFrame):
             button_color="#9b8878",
             button_hover_color="#9b8878"
         )
-        # ======= --- ======= #
+        # ======= ----------- ======= #
+
+        # ======= help ======= #
+
+        # ======= ---- ======= #
     # ======= ---- ======= #
 
     # ======= help ======= #
@@ -356,7 +372,20 @@ class Leaderboard(CTkTabview):
             case "score": filtr = 1
             case "block": filtr = 2
             case "name": filtr = 3
-        values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[filtr], reverse=(True if filtr != 3 else False))
+        if filtr == 0:
+            def toDate(total: str) -> None:
+                item = total[0]
+                return datetime(
+                    year=int(item[:4]), 
+                    month=int(item[5:7]), 
+                    day=int(item[8:10]), 
+                    hour=int(item[11:13]), 
+                    minute=int(item[14:16]), 
+                    second=int(item[17:19])
+                )
+            values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: toDate(item), reverse=(True if filtr in [0, 3] else False))
+        else:
+            values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[filtr], reverse=(True if filtr != 3 else False))
 
         if (board.values != values or board.values == None or need) and board.size.get() != "":
             try:
@@ -367,6 +396,7 @@ class Leaderboard(CTkTabview):
 
             size = int(board.size.get())
             if size < 2: size = 2
+            if size > 30: size = 30
             board.length = len(values)//size + (1 if len(values)%size != 0 else 0)
 
             # ======= table creation ======= #
@@ -603,7 +633,7 @@ class Side(CTkFrame):
             border_color="#eae7d9",
             border_width=3,
             font=(FONT, 28),
-            command=master.game.undo
+            command=master.undo
         )
         side.undo.grid(column=0, row=4, sticky="nsew", padx=19, pady=19)
 
@@ -727,19 +757,6 @@ class GameScreen(CTkFrame):
             showingLoss = True
             screen.loseNotifier = Notification(screen, False)
     # ======= --- ======= #
-
-    # ======= undo ======= #
-    def undo(screen) -> None:
-        # ======= undo ======= #
-        if not pause:
-            pass #TODO: add undo function
-        # ======= ---- ======= #
-
-        # ======= open website ======= #
-        else:
-            openWeb("https://github.com/aahan0511/the2048game")
-        # ======= ---- ------- ======= #
-    # ======= ---- ======= #
 
     # ======= hint ======= #
     def hint(screen) -> None:
