@@ -1,5 +1,5 @@
 # ======= imports ======= #
-from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview, CTkInputDialog
+from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview, CTkInputDialog, CTkSegmentedButton, StringVar, CTkComboBox
 from os import path as osPath, makedirs, getlogin, system
 from sqlite3 import connect
 from sys import path
@@ -24,7 +24,7 @@ PATHS = {
 FONT = "JetBrains Mono Medium"
 SPEED = 5
 GROW_SPEED = 3.6
-TABLE_LEN = 15
+TABLE_LEN = 20
 # ======= --------- ======= #
 
 # ======= global variables ======= #
@@ -260,12 +260,45 @@ class More(CTkFrame):
             width=555,
             corner_radius=35
         )
-        more.pack_propagate(False)
+        more.grid_propagate(False)
+
+        more.rowconfigure(0, uniform="a", weight=10)
+        more.rowconfigure(1, uniform="a", weight=33)
+        more.rowconfigure(2, uniform="a", weight=606)
+        more.rowconfigure(3, uniform="a", weight=19)
+        more.columnconfigure((0, 1), weight=1, uniform="a")
         # ======= ----- ======= #
 
         # ======= gui ======= #
         more.showingLeader = False
-        more.leaderboard = Leaderboard(more)
+
+        more.leaderboardFilter = StringVar(value="score")
+        more.leaderboardSize = StringVar(value=TABLE_LEN)
+        more.leaderboard = Leaderboard(more, more.leaderboardFilter, more.leaderboardSize)
+        more.leaderFilter = CTkSegmentedButton(
+            more,
+            values=["time", "score", "block", "name"],
+            variable=more.leaderboardFilter,
+            fg_color="#9b8878",
+            selected_color="#eae7d9",
+            selected_hover_color="#9b8878",
+            unselected_hover_color="#bdac97",
+            unselected_color="#faf8f0",
+            text_color="#878787"
+        )
+        more.leaderSize = CTkComboBox(
+            more, 
+            values=["10", "15", "20", "25"], 
+            variable=more.leaderboardSize,
+            border_color="#9b8878",
+            fg_color="#eae7d9",
+            text_color="#878787",
+            dropdown_fg_color="#eae7d9",
+            dropdown_text_color="#878787",
+            dropdown_hover_color="#faf8f0",
+            button_color="#9b8878",
+            button_hover_color="#9b8878"
+        )
         # ======= --- ======= #
     # ======= ---- ======= #
 
@@ -284,8 +317,14 @@ class More(CTkFrame):
 
     # ======= show leaderboard ======= #
     def showLeaderboard(more) -> None:
-        if not more.showingLeader: more.leaderboard.show()
-        else: more.leaderboard.hide()
+        if not more.showingLeader: 
+            more.leaderFilter.grid(row=1, column=0, sticky="e", padx=5)
+            more.leaderSize.grid(row=1, column=1, sticky="w", padx=5)
+            more.leaderboard.show()
+        else: 
+            more.leaderFilter.grid_forget()
+            more.leaderSize.grid_forget()
+            more.leaderboard.hide()
         more.showingLeader = not more.showingLeader
     # ======= ---- ----------- ======= #
 # ======= ---- --- ======= #
@@ -294,7 +333,7 @@ class More(CTkFrame):
 class Leaderboard(CTkTabview):
 
     # ======= init ======= #
-    def __init__(board, master: More) -> None:
+    def __init__(board, master: More, boardFilter: StringVar, boardSize: StringVar) -> None:
         super().__init__(
             master,
             fg_color="#9b8878",
@@ -303,22 +342,34 @@ class Leaderboard(CTkTabview):
             segmented_button_selected_hover_color="#9b8878",
             segmented_button_unselected_hover_color="#bdac97",
             segmented_button_unselected_color="#faf8f0",
-            text_color="#878787"
+            text_color="#878787",
         )
         board.values = None
+        board.filter = boardFilter
+        board.size = boardSize
     # ======= ---- ======= #
 
     # ======= refresh ======= #
-    def refresh(board) -> None:
-        values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[2], reverse=True)
+    def refresh(board, need=False, *_) -> None:
+        match board.filter.get():
+            case "time": filtr = 0
+            case "score": filtr = 1
+            case "block": filtr = 2
+            case "name": filtr = 3
+        values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[filtr], reverse=(True if filtr != 3 else False))
 
-        if board.values != values or board.values == None:
-            if board.values != None:
-                for tab in range(1, board.length+1):
-                    board.delete(str(tab))
+        if (board.values != values or board.values == None or need) and board.size.get() != "":
+            try:
+                if board.values != None:
+                    for tab in range(1, board.length+1):
+                        board.delete(str(tab))
+            except ValueError: pass
 
-            board.length = len(values)//TABLE_LEN + (1 if len(values)%TABLE_LEN != 0 else 0)
+            size = int(board.size.get())
+            if size < 2: size = 2
+            board.length = len(values)//size + (1 if len(values)%size != 0 else 0)
 
+            # ======= table creation ======= #
             for tabNum in range(board.length):
                 tabName = str(tabNum+1)
 
@@ -327,26 +378,29 @@ class Leaderboard(CTkTabview):
                 CTkTable(
                     board.tab(tabName),
                     column=4,
-                    values=[("TIME", "SCORE", "BLOCK", "NAME")]+values[TABLE_LEN*tabNum:TABLE_LEN*(tabNum+1)],
+                    values=[("TIME", "SCORE", "BLOCK", "NAME")]+values[size*tabNum:size*(tabNum+1)],
                     corner_radius=35,
                     header_color="#bdac97",
                     text_color="#756452",
                     colors=["#eae7d9", "#faf8f0"],
-                    row=TABLE_LEN
+                    row=size+1
                 ).pack(expand=True, fill="both")
+            # ======= ----- -------- ======= #
 
             board.values = values
     # ======= ------- ======= #
 
     # ======= show ======= #
     def show(board) -> None:
-        board.pack(expand=True, fill="both", padx=19, pady=19)
+        board.grid(row=2, column=0, sticky="nsew", padx=19, columnspan=2)
+        board.filter.trace("w", board.refresh)
+        board.size.trace("w", lambda *_: board.refresh(True))
         board.refresh()
     # ======= ---- ======= #
 
     # ======= hide ======= #
     def hide(board) -> None:
-        board.pack_forget()
+        board.grid_forget()
     # ======= ---- ======= #
 # ======= ----------- ======= #
 
