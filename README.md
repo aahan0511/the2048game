@@ -4,7 +4,7 @@ This is the Python clone for 2048.
 ## Table Of Contents
 - [Status](#status)
     - [Bugs](#bugs)
-    - [Features](#features)
+    - [Not Ready Features](#not-ready-features)
 - [Inspiration](#inspiration)
 - [How To Play](#how-to-play)
 - [Installation](#installation)
