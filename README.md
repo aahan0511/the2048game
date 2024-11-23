@@ -98,7 +98,7 @@ On Windows you can install the executable from releases. The executable is only 
 > It is quite slow because it is made with `PyInstaller`. If you have any suggestions, put them in [this discussion](https://github.com/aahan0511/the2048game/discussions/2 "Ideas Discussion").
 
 ## Data Stored
-Your score is locally saved along with the time and the highest number you reached.
+Your score is locally saved along with the time and the highest number you reached. You may even enter your name, which is optional.
 > [!NOTE]
 > No other information is used, stored, or sent to us.
 
