@@ -199,7 +199,9 @@ class App(CTk):
                             byref(c_int(0x0097acbd)), 
                             sizeof(c_int)
                         )
-                    except ImportError: pass
+                        name.title("")
+                    except ImportError:
+                        name.title("NAME REQUEST")
 
                     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {root.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
                     conn.commit()
@@ -343,6 +345,22 @@ class More(CTkFrame):
             more.leaderboard.hide()
         more.showingLeader = not more.showingLeader
     # ======= ---- ----------- ======= #
+
+    # ======= show ======= #
+    def show(more) -> None:
+        more.place(x=415, y=342, anchor="center")
+        more.lift()
+    # ======= ---- ======= #
+
+    # ======= hide ======= #
+    def hide(more) -> None:
+        more.place_forget()
+
+        more.leaderFilter.grid_forget()
+        more.leaderSize.grid_forget()
+        more.leaderboard.hide()
+        more.showingLeader = False
+    # ======= ---- ======= #
 # ======= ---- --- ======= #
 
 # ======= leaderboard ======= #
@@ -374,14 +392,18 @@ class Leaderboard(CTkTabview):
             case "name": filtr = 3
         if filtr == 0:
             def toDate(total: str) -> None:
-                item = total[0]
+                item = total[0].split(" ")
+                date = item[0].split("-")
+                time = item[1].split(":")
+                hour = time[0]
+                time = time[1].split(".")
                 return datetime(
-                    year=int(item[:4]), 
-                    month=int(item[5:7]), 
-                    day=int(item[8:10]), 
-                    hour=int(item[11:13]), 
-                    minute=int(item[14:16]), 
-                    second=int(item[17:19])
+                    year=int(date[0]),
+                    month=int(date[1]),
+                    day=int(date[2]),
+                    hour=int(hour),
+                    minute=int(time[0]),
+                    second=int(time[1]),
                 )
             values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: toDate(item), reverse=(True if filtr in [0, 3] else False))
         else:
@@ -395,8 +417,8 @@ class Leaderboard(CTkTabview):
             except ValueError: pass
 
             size = int(board.size.get())
-            if size < 2: size = 2
-            if size > 30: size = 30
+            if size < 10: size = 10
+            if size > 25: size = 30
             board.length = len(values)//size + (1 if len(values)%size != 0 else 0)
 
             # ======= table creation ======= #
@@ -675,8 +697,7 @@ class Side(CTkFrame):
     def click(side) -> None:
         global pause
         if not pause:
-            side.more.place(x=415, y=342, anchor="center")
-            side.more.lift()
+            side.more.show()
             side.help.configure(text="❔")
             side.play.configure(text="⚙️")
             side.undo.configure(text="🌐")
@@ -684,7 +705,7 @@ class Side(CTkFrame):
             side.end.configure(text="📂")
             side.moreButton.configure(text="🎲")
         else:
-            side.more.place_forget()
+            side.more.hide()
             side.help.configure(text="⭐")
             side.play.configure(text="🎮")
             side.undo.configure(text="🔙")
