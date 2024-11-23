@@ -32,6 +32,9 @@ This is the Python clone for 2048.
 > If you get an error related to tables in sqlite3, go to ✨, and then 📂. Then close the app. After which you may delete the database called `2048.db`. This will erase all old data, but will fix the bug.
 > This ussually happens due to version change.
 
+> [!TIP]
+> If you find a bug, you may create an issue.
+
 ### Not Ready Features
 
 #### Help ❔
