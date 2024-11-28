@@ -20,7 +20,7 @@ This is the Python clone for 2048.
 
 ## Status
 > [!NOTE]
-> The project is not production ready, but is functional. Some functions are not yet ready.
+> The project is not production ready, but is functional. Some functions are not yet ready. See [v0.1.0-alpha](https://github.com/aahan0511/the2048game/releases/tag/v0.1.0-alpha) for the current release.
 
 ### Bugs
 
