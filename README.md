@@ -10,7 +10,7 @@ This is the Python clone for 2048.
 - [Installation](#installation)
     - [Source Code](#source-code-recommended)
     - [ZIP File](#zip-file)
-- [Data Stored](#data-stored)
+- [Security](#security)
 - [Requirements](#requirements)
     - [Font](#font)
     - [Modules](#modules)
@@ -97,11 +97,10 @@ You can install a `.zip` file for your os. They can be found in the [latest rele
 > [!TIP]
 > The [`mac.zip`](binary/mac.zip) is suitable for macos and linux. The [`win.zip`](binary/win.zip) is suitable for only windows.
 
-## Data Stored
+## Security
 Your score is locally saved along with the time and the highest number you reached. You may even enter your name, which is optional.
 
-> [!NOTE]
-> No other information is used, stored, or sent to us.
+See [SECURITY.md](SECURITY.md) for more information.
 
 ## Requirements
 
