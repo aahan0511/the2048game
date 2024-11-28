@@ -77,7 +77,7 @@ If you have never played 2048 before here is the rules of 2048:
 
 ## Installation
 
-### Source Code (recommended)
+### Source Code
 This requires `Python 3.10+`, atleast that's what I think.
 
 This also requires all the [needed modules](requirements.txt "requirements"), for which you need to do 
@@ -91,14 +91,15 @@ This will install all needed modules and libraries, see [required modules](#modu
 > [!WARNING]
 > Some things may break when tampered with. Please edit the code with caution.
 
-### Executable (not ready)
-On Windows you can install the executable from releases. The executable is only compatible with Windows currently.
+### ZIP file
+You can install a `.zip` file for your os. They can be found in the [latest release](https://github.com/aahan0511/the2048game/releases/tag/v0.1.0-alpha "v0.1.0-alpha"), or even in the [binary folder](binary/). 
 
-> [!CAUTION]
-> It is quite slow because it is made with `PyInstaller`. If you have any suggestions, put them in [this discussion](https://github.com/aahan0511/the2048game/discussions/2 "Ideas Discussion").
+> [!TIP]
+> The [`mac.zip`](binary/mac.zip) is suitable for macos and linux. The [`win.zip`](binary/win.zip) is suitable for only windows.
 
 ## Data Stored
 Your score is locally saved along with the time and the highest number you reached. You may even enter your name, which is optional.
+
 > [!NOTE]
 > No other information is used, stored, or sent to us.
 
