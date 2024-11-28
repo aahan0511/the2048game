@@ -9,7 +9,7 @@ This is the Python clone for 2048.
 - [How To Play](#how-to-play)
 - [Installation](#installation)
     - [Source Code](#source-code-recommended)
-    - [Executable](#executable-not-ready)
+    - [ZIP File](#zip-file)
 - [Data Stored](#data-stored)
 - [Requirements](#requirements)
     - [Font](#font)
