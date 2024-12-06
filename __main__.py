@@ -10,18 +10,18 @@ from PIL import Image, ImageTk
 from random import randint, choice
 from webbrowser import open as openWeb
 from datetime import datetime
+from ctypes import windll, byref, sizeof, c_int
+import pywinstyles
 # ======= ------- ======= #
 
 # ======= constants ======= #
 USER = getlogin()
-DIRECTORY = f"C:\\Users\\{USER}\\AppData\\Local\\"+"the2048game\\"
+DIRECTORY = f"C:\\Users\\{USER}\\AppData\\Local\\the2048game"
 COLORS = [None, "#eee4da", "#ebd8b6", "#f3b178", "#f69562", "#f88165", "#f76644", "#f0d26c", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#393931"]
 PATHS = {
-    "empty" : f"{path[0]}\\images\\empty.ico",
-    "favicon" : f"{path[0]}\\images\\favicon.ico",
-    "icon" : f"{path[0]}\\images\\icon.png"
+    "empty" : f"{DIRECTORY}\\assets\\images\\empty.ico",
+    "icon" : f"{DIRECTORY}\\assets\\images\\icon.png"
 }
-FONT = "JetBrains Mono Medium"
 SPEED = 5
 GROW_SPEED = 3.6
 TABLE_LEN = 20
@@ -40,7 +40,7 @@ pause = False
 if not osPath.exists(DIRECTORY): 
     makedirs(DIRECTORY)
 
-conn = connect(f"{DIRECTORY}\\2048.db")
+conn = connect(f"{DIRECTORY}\\scores.db")
 cursor = conn.cursor()
 
 cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER, NAME TEXT)")
@@ -63,7 +63,6 @@ class App(CTk):
 
         # ======= empty title bar ======= #
         try:
-            from ctypes import windll, byref, sizeof, c_int
             windll.dwmapi.DwmSetWindowAttribute(
                 windll.user32.GetParent(root.winfo_id()), 
                 35, 
@@ -72,9 +71,6 @@ class App(CTk):
             )
             root.title("")
             root.iconbitmap(PATHS["empty"])
-        except ImportError:
-            root.title("the2048game")
-            root.iconbitmap(PATHS["favicon"])
         except TclError: pass 
         # ======= ----- ----- --- ======= #
 
@@ -185,23 +181,19 @@ class App(CTk):
                         entry_text_color="#ffffff"
                     )
 
-                    try:
-                        from ctypes import windll, byref, sizeof, c_int
-                        windll.dwmapi.DwmSetWindowAttribute(
-                            windll.user32.GetParent(name.winfo_id()), 
-                            36, 
-                            byref(c_int(0x00f0f8fa)), 
-                            sizeof(c_int)
-                        )
-                        windll.dwmapi.DwmSetWindowAttribute(
-                            windll.user32.GetParent(name.winfo_id()), 
-                            35, 
-                            byref(c_int(0x0097acbd)), 
-                            sizeof(c_int)
-                        )
-                        name.title("")
-                    except ImportError:
-                        name.title("NAME REQUEST")
+                    windll.dwmapi.DwmSetWindowAttribute(
+                        windll.user32.GetParent(name.winfo_id()), 
+                        36, 
+                        byref(c_int(0x00f0f8fa)), 
+                        sizeof(c_int)
+                    )
+                    windll.dwmapi.DwmSetWindowAttribute(
+                        windll.user32.GetParent(name.winfo_id()), 
+                        35, 
+                        byref(c_int(0x0097acbd)), 
+                        sizeof(c_int)
+                    )
+                    name.title("")
 
                     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {root.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
                     conn.commit()
@@ -528,7 +520,7 @@ class NamePlate(CTkFrame):
             nameplate,
             text_color="#756452",
             text="2048",
-            font=(FONT, 50, "bold")
+            font=("JetBrains Mono Medium", 50, "bold")
         )
         nameplate.name.place(relx=0.6, rely=0.5, anchor="center")
         # ======= --- ======= #
@@ -555,15 +547,12 @@ class Score(CTkFrame):
         # ======= ----- ======= #
 
         # ======= gui ======= #
-        score.label = CTkLabel(score, text=description, font=(FONT, 13), text_color="#988a86")
+        score.label = CTkLabel(score, text=description, font=("JetBrains Mono Medium", 13), text_color="#988a86")
         score.label.place(relx=0.5, rely=0, anchor="n")
 
-        try:
-            import pywinstyles
-            pywinstyles.set_opacity(score.label, color=color)
-        except ImportError: pass
+        pywinstyles.set_opacity(score.label, color=color)
 
-        score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=(FONT, 20))
+        score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=("JetBrains Mono Medium", 20))
         score.number.place(relx=0.5, rely=0.6, anchor="center")
         # ======= --- ======= #
 
@@ -607,7 +596,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=side.click
         )
         side.moreButton.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
@@ -622,7 +611,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=more.help
         )
         side.help.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
@@ -636,7 +625,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=master.play
         )
         side.play.grid(column=0, row=3, sticky="nsew", padx=19, pady=19)
@@ -650,7 +639,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=master.undo
         )
         side.undo.grid(column=0, row=4, sticky="nsew", padx=19, pady=19)
@@ -664,7 +653,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=master.game.hint
         )
         side.hint.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
@@ -678,7 +667,7 @@ class Side(CTkFrame):
             hover_color="#eae7d9",
             border_color="#eae7d9",
             border_width=3,
-            font=(FONT, 28),
+            font=("JetBrains Mono Medium", 28),
             command=master.end
         )
         side.end.grid(column=0, row=6, sticky="nsew", padx=19, pady=19)
@@ -808,7 +797,7 @@ class Notification(CTkFrame):
             # ======= gui ======= #
             text = CTkLabel(
                 notifier,
-                font=(FONT, 100),
+                font=("JetBrains Mono Medium", 100),
                 text="You Win!",
                 text_color="#888888"
             )
@@ -816,16 +805,13 @@ class Notification(CTkFrame):
 
             subtext = CTkLabel(
                 notifier,
-                font=(FONT, 20),
+                font=("JetBrains Mono Medium", 20),
                 text="Click to Continue",
                 text_color="#888888"
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
             
-            try:
-                import pywinstyles
-                pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
-            except ImportError: pass
+            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
             # ======= --- ======= #
 
             # ======= exit ======= #
@@ -850,7 +836,7 @@ class Notification(CTkFrame):
             # ======= gui ======= #
             text = CTkLabel(
                 notifier,
-                font=(FONT, 100),
+                font=("JetBrains Mono Medium", 100),
                 text="You Lose!",
                 text_color="#ffffff"
             )
@@ -858,16 +844,13 @@ class Notification(CTkFrame):
 
             subtext = CTkLabel(
                 notifier,
-                font=(FONT, 20),
+                font=("JetBrains Mono Medium", 20),
                 text="Press ❌ to Continue",
                 text_color="#ffffff"
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
 
-            try:
-                import pywinstyles
-                pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
-            except ImportError: pass
+            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
             # ======= --- ======= #
         # ======= ---- ======= #
     # ======= ---- ======= #
@@ -900,7 +883,7 @@ class Block:
             textvariable=block.var, 
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=(FONT, 28 if block.power <= 13 else 24),
+            font=("JetBrains Mono Medium", 28 if block.power <= 13 else 24),
             justify="center", 
             anchor="center",
             width=1,
@@ -956,7 +939,7 @@ class Block:
         block.cell.configure(
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=(FONT, 28 if block.power <= 13 else 24)
+            font=("JetBrains Mono Medium", 28 if block.power <= 13 else 24)
         )
         grid[block.pos] = block
         matrix[block.pos] = block.power
@@ -1103,21 +1086,18 @@ if app.scoreVar.get() != 0:
         entry_text_color="#ffffff"
     )
 
-    try:
-        from ctypes import windll, byref, sizeof, c_int
-        windll.dwmapi.DwmSetWindowAttribute(
-            windll.user32.GetParent(name.winfo_id()), 
-            36, 
-            byref(c_int(0x00f0f8fa)), 
-            sizeof(c_int)
-        )
-        windll.dwmapi.DwmSetWindowAttribute(
-            windll.user32.GetParent(name.winfo_id()), 
-            35, 
-            byref(c_int(0x0097acbd)), 
-            sizeof(c_int)
-        )
-    except ImportError: pass
+    windll.dwmapi.DwmSetWindowAttribute(
+        windll.user32.GetParent(name.winfo_id()), 
+        36, 
+        byref(c_int(0x00f0f8fa)), 
+        sizeof(c_int)
+    )
+    windll.dwmapi.DwmSetWindowAttribute(
+        windll.user32.GetParent(name.winfo_id()), 
+        35, 
+        byref(c_int(0x0097acbd)), 
+        sizeof(c_int)
+    )
     
     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {app.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
     conn.commit()
