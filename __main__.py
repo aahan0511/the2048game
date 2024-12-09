@@ -1,9 +1,7 @@
 # ======= imports ======= #
 from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview, CTkInputDialog, CTkSegmentedButton, StringVar, CTkComboBox
-from os import path as osPath, makedirs, getlogin, system
+from os import path as path, makedirs, getlogin, system
 from sqlite3 import connect
-from sys import path
-from _tkinter import TclError
 from tkinter import Event
 from CTkTable import CTkTable
 from PIL import Image, ImageTk
@@ -37,7 +35,7 @@ pause = False
 # ======= ------ --------- ======= #
 
 # ======= directory and database creation ======= #
-if not osPath.exists(DIRECTORY): 
+if not path.exists(DIRECTORY): 
     makedirs(DIRECTORY)
 
 conn = connect(f"{DIRECTORY}\\scores.db")
@@ -62,16 +60,14 @@ class App(CTk):
         # ======= ------ ----- ======= #
 
         # ======= empty title bar ======= #
-        try:
-            windll.dwmapi.DwmSetWindowAttribute(
-                windll.user32.GetParent(root.winfo_id()), 
-                35, 
-                byref(c_int(0x00f0f8fa)), 
-                sizeof(c_int)
-            )
-            root.title("")
-            root.iconbitmap(PATHS["empty"])
-        except TclError: pass 
+        windll.dwmapi.DwmSetWindowAttribute(
+            windll.user32.GetParent(root.winfo_id()), 
+            35, 
+            byref(c_int(0x00f0f8fa)), 
+            sizeof(c_int)
+        )
+        root.title("")
+        root.iconbitmap(PATHS["empty"])
         # ======= ----- ----- --- ======= #
 
         # ======= variables ======= # 
@@ -171,7 +167,7 @@ class App(CTk):
                 if root.scoreVar.get() != 0:
                     name = CTkInputDialog(
                         text="Your game has ended; what name should we save your score with?",
-                        title="the2048game: NAME REQUEST",
+                        title="the2048game | NAME REQUEST",
                         fg_color="#bdac97",
                         button_fg_color="#faf8f0",
                         button_hover_color="#eae7d9",
@@ -211,8 +207,7 @@ class App(CTk):
 
         # ======= open folder ======= #
         else:
-            try: system(f'start %windir%\\explorer.exe "{DIRECTORY}"')
-            except: pass #TODO: add open folder for non-windows
+            system(f'start %windir%\\explorer.exe "{DIRECTORY}"')
         # ======= ---- ------ ======= #
     # ======= --- ======= #
     
@@ -883,7 +878,7 @@ class Block:
             textvariable=block.var, 
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=("JetBrains Mono Medium", 28 if block.power <= 13 else 24),
+            font=("JetBrains Mono Bold", 28 if block.power <= 13 else 24),
             justify="center", 
             anchor="center",
             width=1,
@@ -939,7 +934,7 @@ class Block:
         block.cell.configure(
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=("JetBrains Mono Medium", 28 if block.power <= 13 else 24)
+            font=("JetBrains Mono Bold", 28 if block.power <= 13 else 24)
         )
         grid[block.pos] = block
         matrix[block.pos] = block.power
@@ -1076,7 +1071,7 @@ app = App()
 if app.scoreVar.get() != 0:
     name = CTkInputDialog(
         text="Your game has ended; what name should we save your score with?",
-        title="the2048game: NAME REQUEST",
+        title="the2048game | NAME REQUEST",
         fg_color="#bdac97",
         button_fg_color="#faf8f0",
         button_hover_color="#eae7d9",
@@ -1089,7 +1084,7 @@ if app.scoreVar.get() != 0:
     windll.dwmapi.DwmSetWindowAttribute(
         windll.user32.GetParent(name.winfo_id()), 
         36, 
-        byref(c_int(0x00f0f8fa)), 
+        byref(c_int(0x0097acbd)), 
         sizeof(c_int)
     )
     windll.dwmapi.DwmSetWindowAttribute(
