@@ -10,6 +10,7 @@ from webbrowser import open as openWeb
 from datetime import datetime
 from ctypes import windll, byref, sizeof, c_int
 import pywinstyles
+from pyglet import options, font
 # ======= ------- ======= #
 
 # ======= constants ======= #
@@ -43,6 +44,12 @@ cursor = conn.cursor()
 
 cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER, NAME TEXT)")
 # ======= --------- --- -------- -------- ======= #
+
+# ======= font ======= #
+options['win32_gdi_font'] = True
+font.add_file(PATHS["JetBrainsMono-Medium.ttf"])
+font.add_file(PATHS["JetBrainsMono-Bold.ttf"])
+# ======= ---- ======= #
 
 # ======= window ======= #
 class App(CTk):
