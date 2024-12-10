@@ -22,14 +22,13 @@ This is the Python clone for 2048.
 > [!NOTE]
 > The project is not production ready, but is functional. Some functions are not yet ready. See [v0.1.0-alpha](https://github.com/aahan0511/the2048game/releases/tag/v0.1.0-alpha) for the current release.
 
+> [!IMPORTANT]
+> **the2048game** is currently only for windows, it may work for other operating systems after some changes, but it may not work as intended.
+
 ### Bugs
 
 > [!IMPORTANT]
-> If you are not on Windows, or get an error related to the `DIRECTORY`, you might need to redirect the `DIRECTORY`.
-> In [`__main__.py`](__main__.py "__main__") go to the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section and change the first part of `DIRECTORY`.
-
-> [!IMPORTANT]
-> If you get an error related to tables in sqlite3, go to ✨, and then 📂. Then close the app. After which you may delete the database called `2048.db`. This will erase all old data, but will fix the bug.
+> If you get an error related to tables in sqlite3, or related to assets, run the [`setup.py`](setup.py) again, this will refresh your database and assets.
 > This ussually happens due to version change.
 
 > [!TIP]
@@ -48,9 +47,6 @@ This is the Python clone for 2048.
 
 #### Settings ⚙️
 > The settings button [⚙️], is not ready. It will show a settings page.
-
-#### Open Folder 📂
-> The open folder [📂], is not ready for non-windows. It opens the data folder in file explorer.
 
 #### Slide Animation
 > The sliding animation, is not ready.
@@ -77,25 +73,10 @@ If you have never played 2048 before here is the rules of 2048:
 
 ## Installation
 
-### Source Code
-This requires `Python 3.10+`, atleast that's what I think.
+Run [`setup.py`](setup.py), or get latest [`setup.exe`](binary/setup.exe) (from the release, or in the binary folder).
 
-This also requires all the [needed modules](requirements.txt "requirements"), for which you need to do 
-> `pip install -r requirements.txt`
-
-This will install all needed modules and libraries, see [required modules](#modules) for more information.
-
-> [!TIP]
-> You might even edit some things in the code to change the working flow of the code. Like the directory where the database is saved, or the color of the background, etc.
-
-> [!WARNING]
-> Some things may break when tampered with. Please edit the code with caution.
-
-### ZIP file
-You can install a `.zip` file for your os. They can be found in the [latest release](https://github.com/aahan0511/the2048game/releases/tag/v0.1.0-alpha "v0.1.0-alpha"), or even in the [binary folder](binary/). 
-
-> [!TIP]
-> The [`mac.zip`](binary/mac.zip) is suitable for macos and linux. The [`win.zip`](binary/win.zip) is suitable for only windows.
+Running it will give you the options to install the app, or source code.
+This way is the most recommended as it installs the assets, fonts, etc.
 
 ## Security
 Your score is locally saved along with the time and the highest number you reached. You may even enter your name, which is optional.
@@ -104,23 +85,23 @@ See [SECURITY.md](SECURITY.md) for more information.
 
 ## Requirements
 
+Installing the app using setup will install all nessecary requirements.
+
 ### Font
 The font used is from [JetBrainsMono](https://github.com/JetBrains/JetBrainsMono "JetBrainsMono on GitHub"). I have peronally used [JetBrains Mono Medium](requirements/JetBrainsMono-Medium.ttf), which is available in the repository. You can change the font in the [`constants`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/__main__.py#L14-L26 "constants section") section.
 
 ### Modules
+> `pip install -r requirements.txt`
+
 [customtkinter](https://github.com/TomSchimansky/CustomTkinter) - `pip install customtkinter`
 
 [pillow (PIL)](https://github.com/python-pillow/Pillow) - `pip install pillow`
 
 [CTkTable](https://github.com/Akascape/CTkTable) - `pip install CTkTable`
 
-#### Only For Windows:
 [pywinstyles](https://github.com/Akascape/py-window-styles) - `pip install pywinstyles`
 
-#### Only for non-Windows:
-comment-out [`pywinstyles`](https://github.com/aahan0511/the2048game/blob/d62a9709354e9c1dd00bc62e517f4d0a6e2a3fc8/requirements.txt#L5C1-L5C12) in [requirements.txt](requirements.txt), 
-> [!NOTE]
-> This will result in opaque and broken, winning and losing screen. If you have any suggestion to fix this on non-Windows computers, please suggest in [this discussion](https://github.com/aahan0511/the2048game/discussions/4 "Ideas Discussion").
+[pyglet](https://github.com/pyglet/pyglet) - `pip install pyglet`
 
 ## Rate
 How would you rate this game?
