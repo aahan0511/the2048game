@@ -19,7 +19,9 @@ DIRECTORY = f"C:\\Users\\{USER}\\AppData\\Local\\the2048game"
 COLORS = [None, "#eee4da", "#ebd8b6", "#f3b178", "#f69562", "#f88165", "#f76644", "#f0d26c", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#393931"]
 PATHS = {
     "empty" : f"{DIRECTORY}\\assets\\images\\empty.ico",
-    "icon" : f"{DIRECTORY}\\assets\\images\\icon.png"
+    "icon" : f"{DIRECTORY}\\assets\\images\\icon.png",
+    "JetBrainsMono-Medium.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Medium.ttf",
+    "JetBrainsMono-Bold.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Bold.ttf"
 }
 SPEED = 5
 GROW_SPEED = 3.6
