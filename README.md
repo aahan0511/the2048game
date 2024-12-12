@@ -8,8 +8,6 @@ This is the Python clone for 2048.
 - [Inspiration](#inspiration)
 - [How To Play](#how-to-play)
 - [Installation](#installation)
-    - [Source Code](#source-code-recommended)
-    - [ZIP File](#zip-file)
 - [Security](#security)
 - [Requirements](#requirements)
     - [Font](#font)
