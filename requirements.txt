@@ -1,0 +1,6 @@
+customtkinter
+pillow
+CTkTable
+pywinstyles
+pyglet
+requests
