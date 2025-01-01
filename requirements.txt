@@ -3,4 +3,3 @@ pillow
 CTkTable
 pywinstyles
 pyglet
-requests
