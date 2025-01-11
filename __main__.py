@@ -9,7 +9,7 @@ from random import randint, choice
 from webbrowser import open as openWeb
 from datetime import datetime
 from ctypes import windll, byref, sizeof, c_int
-import pywinstyles
+from pywinstyles import *
 from pyglet import options, font
 
 USER = getlogin()
@@ -451,7 +451,7 @@ class Score(CTkFrame):
         score.label = CTkLabel(score, text=description, font=("JetBrains Mono Medium", 13), text_color="#988a86")
         score.label.place(relx=0.5, rely=0, anchor="n")
 
-        pywinstyles.set_opacity(score.label, color=color)
+        set_opacity(score.label, color=color)
 
         score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=("JetBrains Mono Medium", 20))
         score.number.place(relx=0.5, rely=0.6, anchor="center")
@@ -663,7 +663,7 @@ class Notification(CTkFrame):
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
 
-            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
+            set_opacity(notifier, value=0.5, color="#9b8878")
 
             notifier.bind("<Button>", notifier.clear)        
             text.bind("<Button>", notifier.clear)        
@@ -694,7 +694,7 @@ class Notification(CTkFrame):
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
 
-            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
+            set_opacity(notifier, value=0.5, color="#9b8878")
 
     def clear(notifier, _: Event = None) -> None:
         global showingWin, showingLoss
