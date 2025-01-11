@@ -1,5 +1,5 @@
-# ======= imports ======= #
-from customtkinter import CTkFrame, CTk, IntVar, CTkCanvas, CTkLabel, CTkButton, CTkTabview, CTkInputDialog, CTkSegmentedButton, StringVar, CTkComboBox
+
+from customtkinter import *
 from os import path as path, makedirs, getlogin, system
 from sqlite3 import connect
 from tkinter import Event
@@ -11,9 +11,7 @@ from datetime import datetime
 from ctypes import windll, byref, sizeof, c_int
 import pywinstyles
 from pyglet import options, font
-# ======= ------- ======= #
 
-# ======= constants ======= #
 USER = getlogin()
 DIRECTORY = f"C:\\Users\\{USER}\\AppData\\Local\\the2048game"
 COLORS = [None, "#eee4da", "#ebd8b6", "#f3b178", "#f69562", "#f88165", "#f76644", "#f0d26c", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#393931"]
@@ -26,18 +24,14 @@ PATHS = {
 SPEED = 5
 GROW_SPEED = 3.6
 TABLE_LEN = 20
-# ======= --------- ======= #
 
-# ======= global variables ======= #
 grid = [None]*16
 matrix = [0]*16
 ongoing = False
 showingWin = False
 showingLoss = False
 pause = False
-# ======= ------ --------- ======= #
 
-# ======= directory and database creation ======= #
 if not path.exists(DIRECTORY): 
     makedirs(DIRECTORY)
 
@@ -45,20 +39,14 @@ conn = connect(f"{DIRECTORY}\\scores.db")
 cursor = conn.cursor()
 
 cursor.execute("CREATE TABLE IF NOT EXISTS Scores (Time TEXT, Score INTEGER, Block INTEGER, NAME TEXT)")
-# ======= --------- --- -------- -------- ======= #
 
-# ======= font ======= #
 options['win32_gdi_font'] = True
 font.add_file(PATHS["JetBrainsMono-Medium.ttf"])
 font.add_file(PATHS["JetBrainsMono-Bold.ttf"])
-# ======= ---- ======= #
 
-# ======= window ======= #
 class App(CTk):
 
-    # ======= init ======= #
     def __init__(root) -> None:
-        # ======= window setup ======= #
         super().__init__("#faf8f0")
         root.geometry("715x700+50+50")
         root.resizable(False, False)
@@ -66,9 +54,7 @@ class App(CTk):
         root.bind("<Any-KeyPress>", root.keyPress)
         root.bind("<space>", root.play)
         root.bind("<Escape>", root.end)
-        # ======= ------ ----- ======= #
 
-        # ======= empty title bar ======= #
         windll.dwmapi.DwmSetWindowAttribute(
             windll.user32.GetParent(root.winfo_id()), 
             35, 
@@ -77,15 +63,11 @@ class App(CTk):
         )
         root.title("")
         root.iconbitmap(PATHS["empty"])
-        # ======= ----- ----- --- ======= #
 
-        # ======= variables ======= # 
         root.scoreVar = IntVar(value=0)
         root.highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
         icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
-        # ======= --------- ======= # 
 
-        # ======= gui ======= #
         root.more = More(master=root)
         root.header = Header(
             master=root, 
@@ -95,30 +77,20 @@ class App(CTk):
         )
         root.game = GameScreen(master=root)
         root.side = Side(master=root, more=root.more)
-        # ======= --- ======= #
 
-        # ======= mainloop ======= #
         root.mainloop()
-        # ======= -------- ======= #
-    # ======= ---- ======= #
 
-    # ======= key press ======= #
     def keyPress(root, event: Event) -> None:
-        # ======= declarations ======= #
         global movement
         movement = False
         key = event.keysym
-        # ======= ------------ ======= #
 
-        # ======= exceptions and restart ======= #
         if showingWin or showingLoss: return
 
         for cell in grid:
             if cell != None:
                 cell.mix = True
-        # ======= --------- --- ------- ======= #
 
-        # ======= movement switchcase ======= #
         if key == "Left" or key == "a":
             for cell in grid:
                 if cell != None:
@@ -137,9 +109,7 @@ class App(CTk):
             for cell in tempGrid:
                 if cell != None:
                     cell.merge(direction="down")
-        # ======= -------- ---------- ======= #
 
-        # ======= game checks ======= #
         if movement:
             Block(master=root.game).place()
         if matrix.count(0) == 0:
@@ -163,12 +133,8 @@ class App(CTk):
         if matrix.count(11) == 1:
             root.game.win()
             root.game.winNotifier.lift()
-        # ======= ---- ------ ======= #
-    # ======= --- ----- ======= #
 
-    # ======= end ======= #
     def end(root, _: Event = None) -> None:
-        # ======= end ======= #
         if not pause:
             global ongoing
             if ongoing:
@@ -212,56 +178,34 @@ class App(CTk):
                 root.game.loseNotifier.clear()
             if showingWin:
                 root.game.winNotifier.clear()
-        # ======= --- ======= #
 
-        # ======= open folder ======= #
         else:
             system(f'start %windir%\\explorer.exe "{DIRECTORY}"')
-        # ======= ---- ------ ======= #
-    # ======= --- ======= #
-    
-    # ======= play ======= #
+
     def play(root, _: Event = None) -> None:
-        # ======= play ======= #
         if not pause:
             global ongoing
             if not ongoing and not showingWin and not showingLoss:
                 Block(master=root.game).place()
                 Block(master=root.game).place()
                 ongoing = True
-        # ======= ---- ======= #
 
-        # ======= settings ======= #
         else:
             pass #TODO: add settings function
-        # ======= ---- ----------- ======= #
-    # ======= ---- ======= #
 
-    # ======= score increaser ======= #
     def increase(root, increament: int) -> None:
         root.scoreVar.set(root.scoreVar.get()+increament)
-    # ======= ----- --------- ======= #
 
-    # ======= undo ======= #
     def undo(screen) -> None:
-        # ======= undo ======= #
         if not pause:
             pass #TODO: add undo function
-        # ======= ---- ======= #
 
-        # ======= open website ======= #
         else:
             openWeb("https://github.com/aahan0511/the2048game")
-        # ======= ---- ------- ======= #
-    # ======= ---- ======= #
-# ======= ------ ======= #
 
-# ======= more box ======= #
 class More(CTkFrame):
 
-    # ======= init ======= #
     def __init__(more, master: App) -> None:
-        # ======= setup ======= #
         super().__init__(
             master,
             border_color="#9c8978",
@@ -278,9 +222,7 @@ class More(CTkFrame):
         more.rowconfigure(2, uniform="a", weight=606)
         more.rowconfigure(3, uniform="a", weight=19)
         more.columnconfigure((0, 1), weight=1, uniform="a")
-        # ======= ----- ======= #
 
-        # ======= leaderboard ======= #
         more.showingLeader = False
         more.leaderboardFilter = StringVar(value="score")
         more.leaderboardSize = StringVar(value=TABLE_LEN)
@@ -309,23 +251,20 @@ class More(CTkFrame):
             button_color="#9b8878",
             button_hover_color="#9b8878"
         )
-        # ======= ----------- ======= #
-    # ======= ---- ======= #
 
-    # ======= help ======= #
+        more.showingHelp = False
+
     def help(more) -> None:
-        # ======= help ======= #
         if pause:
-            pass #TODO: add help function
-        # ======= ---- ======= #
+            if not more.showingHelp:
+                ...
+            else:
+                ...
+            more.showingHelp = not more.showingHelp
 
-        # ======= star ======= #
         else:
             openWeb("https://github.com/aahan0511/the2048game/discussions/5")
-        # ======= ---- ======= #
-    # ======= ---- ======= #
 
-    # ======= show leaderboard ======= #
     def showLeaderboard(more) -> None:
         if not more.showingLeader: 
             more.leaderFilter.grid(row=1, column=0, sticky="e", padx=5)
@@ -336,15 +275,11 @@ class More(CTkFrame):
             more.leaderSize.grid_forget()
             more.leaderboard.hide()
         more.showingLeader = not more.showingLeader
-    # ======= ---- ----------- ======= #
 
-    # ======= show ======= #
     def show(more) -> None:
         more.place(x=415, y=342, anchor="center")
         more.lift()
-    # ======= ---- ======= #
 
-    # ======= hide ======= #
     def hide(more) -> None:
         more.place_forget()
 
@@ -352,13 +287,12 @@ class More(CTkFrame):
         more.leaderSize.grid_forget()
         more.leaderboard.hide()
         more.showingLeader = False
-    # ======= ---- ======= #
-# ======= ---- --- ======= #
 
-# ======= leaderboard ======= #
+class Help(CTkTextbox):
+    ...
+
 class Leaderboard(CTkTabview):
 
-    # ======= init ======= #
     def __init__(board, master: More, boardFilter: StringVar, boardSize: StringVar) -> None:
         super().__init__(
             master,
@@ -373,9 +307,7 @@ class Leaderboard(CTkTabview):
         board.values = None
         board.filter = boardFilter
         board.size = boardSize
-    # ======= ---- ======= #
 
-    # ======= refresh ======= #
     def refresh(board, need=False, *_) -> None:
         match board.filter.get():
             case "time": filtr = 0
@@ -413,7 +345,6 @@ class Leaderboard(CTkTabview):
             if size > 25: size = 30
             board.length = len(values)//size + (1 if len(values)%size != 0 else 0)
 
-            # ======= table creation ======= #
             for tabNum in range(board.length):
                 tabName = str(tabNum+1)
 
@@ -429,31 +360,21 @@ class Leaderboard(CTkTabview):
                     colors=["#eae7d9", "#faf8f0"],
                     row=size+1
                 ).pack(expand=True, fill="both")
-            # ======= ----- -------- ======= #
 
             board.values = values
-    # ======= ------- ======= #
 
-    # ======= show ======= #
     def show(board) -> None:
         board.grid(row=2, column=0, sticky="nsew", padx=19, columnspan=2)
         board.filter.trace("w", board.refresh)
         board.size.trace("w", lambda *_: board.refresh(True))
         board.refresh()
-    # ======= ---- ======= #
 
-    # ======= hide ======= #
     def hide(board) -> None:
         board.grid_forget()
-    # ======= ---- ======= #
-# ======= ----------- ======= #
 
-# ======= header ======= #
 class Header(CTkFrame):
 
-    # ======= init ======= #
     def __init__(header, master: App, scoreVar: IntVar, highVar: IntVar, icon: ImageTk.PhotoImage) -> None:
-        # ======= setup ======= #
         super().__init__(
             master,
             fg_color="#bdac97",
@@ -463,16 +384,12 @@ class Header(CTkFrame):
             width=555, 
             height=100, 
         )
-        # ======= ----- ======= #
 
-        # ======= grid setup ======= #
         header.rowconfigure(0, weight=1, uniform="a")
         header.columnconfigure(0, weight=2, uniform="a")
         header.columnconfigure((1, 2), weight=1, uniform="a")
         header.grid_propagate(False)
-        # ======= ---- ----- ======= #
 
-        # ======= gui ======= #
         header.namePlate = NamePlate(header, icon)
 
         header.curScore = Score(
@@ -490,24 +407,14 @@ class Header(CTkFrame):
             description="BEST", 
             var=highVar
         )
-        # ======= --- ======= #
 
-        # ======= place ======= #
         header.place(x=415, y=60, anchor="center")
-        # ======= ----- ======= #
-    # ======= ---- ======= #
-# ======= ------ ======= #
 
-# ======= name plate box ======= #
 class NamePlate(CTkFrame):
 
-    # ======= init ======= #
     def __init__(nameplate, master: Header, icon: ImageTk.PhotoImage) -> None:
-        # ======= setup ======= #
         super().__init__(master, fg_color="transparent")
-        # ======= ----- ======= #
 
-        # ======= gui ======= #
         nameplate.logo = CTkCanvas(
             nameplate,
             bd=0, 
@@ -527,20 +434,12 @@ class NamePlate(CTkFrame):
             font=("JetBrains Mono Medium", 50, "bold")
         )
         nameplate.name.place(relx=0.6, rely=0.5, anchor="center")
-        # ======= --- ======= #
 
-        # ======= place ======= #
         nameplate.grid(row=0, column=0, sticky="nsew", padx=10, pady=19)
-        # ======= ----- ======= #
-    # ======= ---- ======= #
-# ======= ---- ----- --- ======= #
 
-# ======= score box ======= #
 class Score(CTkFrame):
 
-    # ======= init ======= #
     def __init__(score, master: Header, color: str, pos: int, description: str, var: IntVar) -> None:
-        # ======= setup ======= #
         super().__init__(
             master,
             corner_radius=25,
@@ -548,9 +447,7 @@ class Score(CTkFrame):
             border_color="#eae7d9",
             border_width=3,
         )
-        # ======= ----- ======= #
 
-        # ======= gui ======= #
         score.label = CTkLabel(score, text=description, font=("JetBrains Mono Medium", 13), text_color="#988a86")
         score.label.place(relx=0.5, rely=0, anchor="n")
 
@@ -558,20 +455,12 @@ class Score(CTkFrame):
 
         score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=("JetBrains Mono Medium", 20))
         score.number.place(relx=0.5, rely=0.6, anchor="center")
-        # ======= --- ======= #
 
-        # ======= place ======= #
         score.grid(row=0, column=pos, sticky="nsew", padx=15, pady=19)
-        # ======= ----- ======= #
-    # ======= ---- ======= #
-# ======= ----- --- ======= #
 
-# ======= side box ======= #
 class Side(CTkFrame):
 
-    # ======= init ======= #
     def __init__(side, master: App, more: More) -> None:
-        # ======= setup ======= #
         super().__init__(
             master,
             fg_color="#bdac97",
@@ -581,16 +470,12 @@ class Side(CTkFrame):
             width=100, 
             height=670, 
         )
-        # ======= ----- ======= #
 
-        # ======= grid setup ======= #
         side.columnconfigure(0, weight=1, uniform="a")
         side.rowconfigure((0, 1, 3, 4, 5, 6), weight=100, uniform="a")
         side.rowconfigure((2), weight=70, uniform="a")
         side.grid_propagate(False)
-        # ======= ---- ----- ======= #
 
-        # ======= gui ======= #
         side.moreButton = CTkButton(
             side, 
             text="✨", 
@@ -661,7 +546,7 @@ class Side(CTkFrame):
             command=master.game.hint
         )
         side.hint.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
-        
+
         side.end = CTkButton(
             side, 
             text="❌", 
@@ -675,14 +560,9 @@ class Side(CTkFrame):
             command=master.end
         )
         side.end.grid(column=0, row=6, sticky="nsew", padx=19, pady=19)
-        # ======= --- ======= #
 
-        # ======= place ======= #
         side.place(x=72.5, y=342, anchor="center")
-        # ======= ----- ======= #
-    # ======= ---- ======= #
 
-    # ======= click ======= #
     def click(side) -> None:
         global pause
         if not pause:
@@ -702,15 +582,10 @@ class Side(CTkFrame):
             side.end.configure(text="❌")
             side.moreButton.configure(text="✨")
         pause = not pause
-    # ======= ----- ======= #
-# ======= ---- --- ======= #
 
-# ======= game screen ======= #
 class GameScreen(CTkFrame):
 
-    # ======= init ======= #
     def __init__(screen, master: App) -> None:
-        # ======= setup ======= #
         super().__init__(
             master,
             fg_color="#9b8878",
@@ -718,19 +593,13 @@ class GameScreen(CTkFrame):
             width=555, 
             height=555, 
         )
-        # ======= ----- ======= #
 
-        # ======= grid setup ======= #
         screen.rowconfigure((0, 1, 2, 3), weight=1, uniform="a")
         screen.columnconfigure((0, 1, 2, 3), weight=1, uniform="a")
         screen.grid_propagate(False)
-        # ======= ---- ----- ======= #
 
-        # ======= variable ======= #
         screen.parent = master
-        # ======= -------- ======= #
 
-        # ======= base design ======= #
         for row in range(4):
             for column in range(4):
                 CTkLabel(
@@ -745,60 +614,39 @@ class GameScreen(CTkFrame):
                     x=136.25*column+73.125,
                     y=136.25*row+73.125
                 )
-        # ======= ---- ------ ======= #
 
-        # ======= place ======= #
         screen.place(x=415, y=400, anchor="center")
-        # ======= ----- ======= #
-    # ======= ---- ======= #
 
-    # ======= win ======= #
     def win(screen) -> None:
         if not showingLoss:
             global showingWin
             showingWin = True
             screen.winNotifier = Notification(screen, True)
-    # ======= --- ======= #
 
-    # ======= loss ======= #
     def loss(screen) -> None:
         if not showingWin:
             global showingLoss
             showingLoss = True
             screen.loseNotifier = Notification(screen, False)
-    # ======= --- ======= #
 
-    # ======= hint ======= #
     def hint(screen) -> None:
-        # ======= hint ======= #
         if not pause:
             pass #TODO: add hint function
-        # ======= ---- ======= #
 
-        # ======= show leaderboard ======= #
         else:
             screen.parent.more.showLeaderboard()
-        # ======= ---- ======= #
-    # ======= ---- ======= #
-# ======= ---- ------ ======= #
 
-# ======= notification ======= #
 class Notification(CTkFrame):
 
-    # ======= init ======= #
     def __init__(notifier, master: GameScreen, version: bool) -> None:
-        # ======= win ======= #
         if version:
-            # ======= setup ======= #
             super().__init__(
                 master, 
                 fg_color="#ffd700", 
                 corner_radius=35
             )
             notifier.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
-            # ======= ----- ======= #
 
-            # ======= gui ======= #
             text = CTkLabel(
                 notifier,
                 font=("JetBrains Mono Medium", 100),
@@ -814,20 +662,14 @@ class Notification(CTkFrame):
                 text_color="#888888"
             )
             subtext.place(relx=0.5, rely=0.6, anchor="center")
-            
-            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
-            # ======= --- ======= #
 
-            # ======= exit ======= #
+            pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
+
             notifier.bind("<Button>", notifier.clear)        
             text.bind("<Button>", notifier.clear)        
             subtext.bind("<Button>", notifier.clear)        
-            # ======= ---- ======= #
-        # ======= --- ======= #
 
-        # ======= loss ======= #
         else:
-            # ======= setup ======= #
             super().__init__(
                 master, 
                 fg_color="#888888", 
@@ -835,9 +677,7 @@ class Notification(CTkFrame):
             )
             notifier.grid(row=0, column=0, columnspan=4, rowspan=4, sticky="nsew")
             notifier.lift()
-            # ======= ----- ======= #
 
-            # ======= gui ======= #
             text = CTkLabel(
                 notifier,
                 font=("JetBrains Mono Medium", 100),
@@ -855,31 +695,20 @@ class Notification(CTkFrame):
             subtext.place(relx=0.5, rely=0.6, anchor="center")
 
             pywinstyles.set_opacity(notifier, value=0.5, color="#9b8878")
-            # ======= --- ======= #
-        # ======= ---- ======= #
-    # ======= ---- ======= #
 
-    # ======= clear ======= #
     def clear(notifier, _: Event = None) -> None:
         global showingWin, showingLoss
         notifier.grid_forget()
         showingWin = False
         showingLoss = False
-    # ======= ----- ======= #
-# ======= ------------ ======= #
 
-# ======= block ======= #
 class Block:
 
-    # ======= init ======= #
     def __init__(block, master: GameScreen) -> None:
-        # ======= place check ======= #
         if matrix.count(0) == 0:
             del block
             return
-        # ======= ----- ----- ======= #
 
-        # ======= setup ======= #
         block.power = choice([1]*9+[2])
         block.var = IntVar(value=2**block.power)
         block.cell = CTkLabel(
@@ -897,18 +726,13 @@ class Block:
         )
         block.master = master
         block.mix = True
-        # ======= ----- ======= #
 
-        # ======= position chooser ======= #
         block.pos = randint(0, 15)
         while matrix[block.pos] != 0: 
             block.pos = randint(0, 15)
         block.x = (block.pos%4)*136.25+73.125
         block.y = (block.pos//4)*136.25+73.125
-        # ======= -------- ------- ======= #
-    # ======= ---- ======= #
 
-    # ======= place ======= #
     def place(block) -> None:
         block.cell.place(
             x=block.x, 
@@ -927,17 +751,13 @@ class Block:
         grow(116.25)
         matrix[block.pos] = block.power
         grid[block.pos] = block 
-    # ======= ----- ======= #
 
-    # ======= destroy ======= #
     def destroy(block) -> None:
         grid[block.pos] = None
         matrix[block.pos] = 0
         block.cell.destroy()
         del block
-    # ======= ------- ======= #
 
-    # ======= set ======= #
     def set(block) -> None:
         block.var.set(2**block.power)
         block.cell.configure(
@@ -947,26 +767,18 @@ class Block:
         )
         grid[block.pos] = block
         matrix[block.pos] = block.power
-    # ======= --- ======= #
 
-    # ======= slide ======= #
     def slide(block, pos: int) -> None:
         block.cell.place(
             x=(pos%4)*136.25+73.125,
             y=(pos//4)*136.25+73.125,
             anchor="center"
         ) #TODO: add slide function
-    # ======= ----- ======= #
 
-    # ======= merge ======= #           
     def merge(block, direction: str) -> None:
-        # ======= global variable ======= #
         global movement
-        # ======= ------ -------- ======= #
 
-        # ======= direction switch case ======= #
         match direction:
-            # ======= left ======= #
             case "left":
                 if block.pos%4 == 0: return
                 cell = grid[block.pos-1]
@@ -990,9 +802,7 @@ class Block:
                     cell.mix = False
                     cell.merge("left")
                     movement = True
-            # ======= ---- ======= #
 
-            # ======= right ======= #
             case "right":
                 if block.pos%4 == 3: return
                 cell = grid[block.pos+1]
@@ -1016,9 +826,7 @@ class Block:
                     cell.mix = False
                     cell.merge("right")
                     movement = True
-            # ======= ----- ======= #
 
-            # ======= up ======= #
             case "up":
                 if block.pos//4 == 0: return
                 cell = grid[block.pos-4]
@@ -1042,9 +850,7 @@ class Block:
                     cell.mix = False
                     cell.merge("up")
                     movement = True
-            # ======= -- ======= #
 
-            # ======= down ======= #
             case "down":
                 if block.pos//4 == 3: return
                 cell = grid[block.pos+4]
@@ -1068,15 +874,9 @@ class Block:
                     cell.mix = False
                     cell.merge("down")
                     movement = True
-            # ======= ---- ======= #
-        # ======= --------- ------ ---- ======= #
-    # ======= ----- ======= #
-# ======= ----- ======= #
 
-# ======= execution ======= #
 app = App()
 
-# ======= database closure ======= #
 if app.scoreVar.get() != 0:
     name = CTkInputDialog(
         text="Your game has ended; what name should we save your score with?",
@@ -1102,9 +902,8 @@ if app.scoreVar.get() != 0:
         byref(c_int(0x0097acbd)), 
         sizeof(c_int)
     )
-    
+
     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {app.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
     conn.commit()
 conn.close()
-# ======= -------- ------- ======= #
-# ======= --------- ======= #
+
