@@ -1,4 +1,3 @@
-
 from customtkinter import *
 from os import path as path, makedirs, getlogin, system
 from sqlite3 import connect
@@ -19,7 +18,8 @@ PATHS = {
     "empty" : f"{DIRECTORY}\\assets\\images\\empty.ico",
     "icon" : f"{DIRECTORY}\\assets\\images\\icon.png",
     "JetBrainsMono-Medium.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Medium.ttf",
-    "JetBrainsMono-Bold.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Bold.ttf"
+    "JetBrainsMono-Bold.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Bold.ttf",
+    "how to play.png" : DIRECTORY+"\\assets\\images\\how to play.png"
 }
 SPEED = 5
 GROW_SPEED = 3.6
@@ -253,13 +253,24 @@ class More(CTkFrame):
         )
 
         more.showingHelp = False
+        more.helpLabel = CTkLabel(
+            more,
+            text="",
+            image=CTkImage(
+                Image.open(PATHS["how to play.png"]),
+                Image.open(PATHS["how to play.png"]),
+                (535, 630)
+            )
+        )
 
     def help(more) -> None:
         if pause:
             if not more.showingHelp:
-                ...
+                more.clear()
+                
+                more.helpLabel.place(relx=0.5, rely=0.5, anchor="center")
             else:
-                ...
+                more.helpLabel.place_forget()
             more.showingHelp = not more.showingHelp
 
         else:
@@ -267,6 +278,8 @@ class More(CTkFrame):
 
     def showLeaderboard(more) -> None:
         if not more.showingLeader: 
+            more.clear()
+
             more.leaderFilter.grid(row=1, column=0, sticky="e", padx=5)
             more.leaderSize.grid(row=1, column=1, sticky="w", padx=5)
             more.leaderboard.show()
@@ -282,14 +295,16 @@ class More(CTkFrame):
 
     def hide(more) -> None:
         more.place_forget()
+        more.clear()
 
+    def clear(more) -> None:
         more.leaderFilter.grid_forget()
         more.leaderSize.grid_forget()
         more.leaderboard.hide()
         more.showingLeader = False
 
-class Help(CTkTextbox):
-    ...
+        more.helpLabel.place_forget()
+        more.showingHelp = False
 
 class Leaderboard(CTkTabview):
 
