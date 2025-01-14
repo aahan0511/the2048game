@@ -64,6 +64,9 @@ class App(CTk):
         root.title("")
         root.iconbitmap(PATHS["empty"])
 
+        root.prevMatrix = None
+        root.prevScore = None
+
         root.scoreVar = IntVar(value=0)
         root.highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
         icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
@@ -84,6 +87,9 @@ class App(CTk):
         global movement
         movement = False
         key = event.keysym
+
+        root.prevMatrix = matrix.copy()
+        root.prevScore = root.scoreVar.get()
 
         if showingWin or showingLoss: return
 
@@ -196,9 +202,32 @@ class App(CTk):
     def increase(root, increament: int) -> None:
         root.scoreVar.set(root.scoreVar.get()+increament)
 
-    def undo(screen) -> None:
+    def undo(root) -> None:
+        global grid, matrix
+
         if not pause:
-            pass #TODO: add undo function
+            if root.prevMatrix:
+                for cell in grid:
+                    if cell:
+                        cell.destroy()
+                        
+                grid = [None]*16
+                matrix = [0]*16
+
+                for idx, cell in enumerate(root.prevMatrix):
+                    if cell != 0:
+                        temp = Block(root.game)
+                        temp.power = cell
+                        temp.x = (idx%4)*136.25+73.125
+                        temp.y = (idx//4)*136.25+73.125
+                        temp.pos = idx
+                        temp.set()
+                        temp.place()
+
+                root.scoreVar.set(root.prevScore)
+
+                root.prevMatrix = None
+                root.prevScore = None
 
         else:
             openWeb("https://github.com/aahan0511/the2048game")
@@ -904,6 +933,9 @@ if app.scoreVar.get() != 0:
         entry_fg_color="#bdac97",
         entry_text_color="#ffffff"
     )
+    system("cls")
+
+    name.after(200, lambda: name.iconbitmap(PATHS["empty"]))
 
     windll.dwmapi.DwmSetWindowAttribute(
         windll.user32.GetParent(name.winfo_id()), 
@@ -920,5 +952,5 @@ if app.scoreVar.get() != 0:
 
     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {app.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
     conn.commit()
-conn.close()
 
+conn.close()
