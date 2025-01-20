@@ -21,6 +21,7 @@
 * [**`Credit`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#credit)
 * [**`Contributing`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#contributing)
 * [**`Code Of Conduct`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#code-of-conduct)
+* [**`Security`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#security)
 
 <br><br>
 <div align="center">
@@ -86,14 +87,17 @@ Thanks to on the [modules](https://github.com/aahan0511/the2048game/requirements
 ## Original Game
 Thanks to **Gabriele Cirulli** who is an Italian freelance programmer, who also developed the game as a *weekend project*.
 
+## Excelidraw
+Thanks to [Excelidraw](https://github.com/excalidraw/excalidraw "Excelidraw on GitHub") for helping create the `how to play`, and the `license page`.
+
 <br><br>
 <div align="center">
 
-# [**`Contributing`**](https://github.com/aahan0511/the2048game/blob/main/.github/CONTRIBUTING.md "Contributing on Othello")
+# [**`Contributing`**](https://github.com/aahan0511/the2048game/blob/main/.github/CONTRIBUTING.md "Contributing on the2048game")
 
 </div>
 
-Follow the [CONTRIBUTING.md](https://github.com/aahan0511/the2048game/blob/main/.github/CONTRIBUTING.md "Contributing for Othello") to ensure a smooth contribution process.
+Follow the [CONTRIBUTING.md](https://github.com/aahan0511/the2048game/blob/main/.github/CONTRIBUTING.md "Contributing for the2048game") to ensure a smooth contribution process.
 
 <br><br>
 <div align="center">
@@ -102,4 +106,13 @@ Follow the [CONTRIBUTING.md](https://github.com/aahan0511/the2048game/blob/main/
 
 </div>
 
-Othello has the [**Contributor Covenant Code of Conduct**](https://github.com/aahan0511/the2048game/blob/main/.github/CODE_OF_CONDUCT.md "Code Of Conduct for Othello").
+Othello has the [**Contributor Covenant Code of Conduct**](https://github.com/aahan0511/the2048game/blob/main/.github/CODE_OF_CONDUCT.md "Code Of Conduct for the2048game").
+
+<br><br>
+<div align="center">
+
+# [**`Security`**](https://github.com/aahan0511/the2048game/blob/main/.github/SECURITY.md "Security on the2048game")
+
+</div>
+
+To view the security and data safety of Othello, see [`SECURITY.md`](https://github.com/aahan0511/the2048game/blob/main/.github/SECURITY.md "Security on the2048game").
