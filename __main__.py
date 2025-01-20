@@ -325,7 +325,7 @@ class More(CTkFrame):
             more.showingHelp = not more.showingHelp
 
         else:
-            openWeb("https://github.com/aahan0511/the2048game/discussions/5")
+            openWeb("https://github.com/aahan0511/the2048game/discussions/1")
 
     def showLeaderboard(more) -> None:
         if not more.showingLeader: 
