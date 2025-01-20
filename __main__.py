@@ -19,7 +19,8 @@ PATHS = {
     "icon" : f"{DIRECTORY}\\assets\\images\\icon.png",
     "JetBrainsMono-Medium.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Medium.ttf",
     "JetBrainsMono-Bold.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Bold.ttf",
-    "how to play.png" : DIRECTORY+"\\assets\\images\\how to play.png"
+    "how to play.png" : DIRECTORY+"\\assets\\images\\how to play.png",
+    "info.png" : DIRECTORY+"\\assets\\images\\info.png"
 }
 SPEED = 5
 GROW_SPEED = 3.6
@@ -88,8 +89,8 @@ class App(CTk):
         movement = False
         key = event.keysym
 
-        root.prevMatrix = matrix.copy()
-        root.prevScore = root.scoreVar.get()
+        prevMatrix = matrix.copy()
+        prevScore = root.scoreVar.get()
 
         if showingWin or showingLoss: return
 
@@ -97,20 +98,20 @@ class App(CTk):
             if cell != None:
                 cell.mix = True
 
-        if key == "Left" or key == "a":
+        if key == "Left" or key == "a" or key == "A":
             for cell in grid:
                 if cell != None:
                     cell.merge(direction="left")
-        if key == "Right" or key == "d":
+        if key == "Right" or key == "d" or key == "D":
             for cell in grid[::-1]:
                 if cell != None:
                     cell.merge(direction="right")
-        if key == "Up" or key == "w":
+        if key == "Up" or key == "w" or key == "W":
             tempGrid = grid[::4]+grid[1::4]+grid[2::4]+grid[3::4]
             for cell in tempGrid:
                 if cell != None:
                     cell.merge(direction="up")
-        if key == "Down" or key == "s":
+        if key == "Down" or key == "s" or key == "S":
             tempGrid = (grid[::4]+grid[1::4]+grid[2::4]+grid[3::4])[::-1]
             for cell in tempGrid:
                 if cell != None:
@@ -118,6 +119,9 @@ class App(CTk):
 
         if movement:
             Block(master=root.game).place()
+
+            root.prevMatrix = prevMatrix
+            root.prevScore = prevScore
         if matrix.count(0) == 0:
             matching = False
             for cell in grid:
@@ -171,6 +175,7 @@ class App(CTk):
                         sizeof(c_int)
                     )
                     name.title("")
+                    name.after(200, lambda: name.iconbitmap(PATHS["empty"]))
 
                     cursor.execute(f"INSERT INTO Scores VALUES ('{datetime.now().date()} {datetime.now().hour}:{datetime.now().minute}.{datetime.now().second}', {root.scoreVar.get()}, {2**max(matrix)}, '{name.get_input()}')") 
                     conn.commit()
@@ -228,6 +233,11 @@ class App(CTk):
 
                 root.prevMatrix = None
                 root.prevScore = None
+
+                if showingWin:
+                    root.game.winNotifier.clear()
+                if showingLoss:
+                    root.game.loseNotifier.clear()
 
         else:
             openWeb("https://github.com/aahan0511/the2048game")
@@ -577,9 +587,9 @@ class Side(CTkFrame):
         )
         side.undo.grid(column=0, row=4, sticky="nsew", padx=19, pady=19)
 
-        side.hint = CTkButton(
+        side.info = CTkButton(
             side, 
-            text="💡", 
+            text="ℹ️", 
             fg_color="#faf8f0", 
             text_color="#988a86", 
             corner_radius=25,
@@ -587,9 +597,9 @@ class Side(CTkFrame):
             border_color="#eae7d9",
             border_width=3,
             font=("JetBrains Mono Medium", 28),
-            command=master.game.hint
+            command=master.game.info
         )
-        side.hint.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
+        side.info.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
 
         side.end = CTkButton(
             side, 
@@ -614,7 +624,7 @@ class Side(CTkFrame):
             side.help.configure(text="❔")
             side.play.configure(text="⚙️")
             side.undo.configure(text="🌐")
-            side.hint.configure(text="🏅")
+            side.info.configure(text="🏅")
             side.end.configure(text="📂")
             side.moreButton.configure(text="🎲")
         else:
@@ -622,7 +632,7 @@ class Side(CTkFrame):
             side.help.configure(text="⭐")
             side.play.configure(text="🎮")
             side.undo.configure(text="🔙")
-            side.hint.configure(text="💡")
+            side.info.configure(text="ℹ️")
             side.end.configure(text="❌")
             side.moreButton.configure(text="✨")
         pause = not pause
@@ -643,6 +653,7 @@ class GameScreen(CTkFrame):
         screen.grid_propagate(False)
 
         screen.parent = master
+        screen.information = None
 
         for row in range(4):
             for column in range(4):
@@ -673,12 +684,43 @@ class GameScreen(CTkFrame):
             showingLoss = True
             screen.loseNotifier = Notification(screen, False)
 
-    def hint(screen) -> None:
+    def info(screen) -> None:
         if not pause:
-            pass #TODO: add hint function
+            if screen.information == None or not screen.information.winfo_exists():
+                screen.information = Info(screen.parent)
+            else:
+                screen.information.focus()
 
         else:
             screen.parent.more.showLeaderboard()
+
+class Info(CTkToplevel):
+
+    def __init__(top, master: App) -> None:
+        super().__init__(master, fg_color="#bdac97")
+        top.title("the2048game | Info")
+
+        top.geometry("425x600")
+        top.resizable(False, False)
+        top.after(200, lambda: top.iconbitmap(PATHS["empty"]))
+        
+        change_border_color(top, "#bdac97")
+        change_header_color(top, "#bdac97")
+        change_title_color(top, "#bdac97")
+
+        top.image = CTkLabel(
+            top,
+            text="",
+            image=CTkImage(
+                Image.open(PATHS["info.png"]),
+                Image.open(PATHS["info.png"]),
+                (423, 600)
+            )
+        )
+        top.image.pack(expand=True, fill="both")
+
+        top.after(200, top.focus)
+        top.after(200, lambda: top.bind("<Button>", lambda _: openWeb("https://github.com/aahan0511")))
 
 class Notification(CTkFrame):
 
