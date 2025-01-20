@@ -16,6 +16,7 @@
 
 * [**`How To Play`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#how-to-play)
 * [**`Status`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#status)
+* [**`Installation`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#installation)
 * [**`License`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#license)
 * [**`Credit`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#credit)
 * [**`Contributing`**](https://github.com/aahan0511/the2048game?tab=readme-ov-file#contributing)
@@ -41,6 +42,24 @@
 
 > [!IMPORTANT]
 > **the2048game** is currently only for windows, it may work for other operating systems after some changes, but it may not work as intended.
+
+<br><br>
+<div align="center">
+
+# **`Installation`**
+
+</div>
+
+1. Open the [**latest release**](https://github.com/aahan0511/the2048game/releases/tag/v1.0.0 "v1.0.0").
+
+2. Install the [`Source code`](https://github.com/aahan0511/the2048game/archive/refs/tags/v1.0.0.zip "Source Code installation"). 
+
+3. Move the [**assets/**](https://github.com/aahan0511/the2048game/tree/v1.0.0/assets) to the following folder: 
+`C:\Users\YOUR_USERNAME\AppData\Local\the2048game`.
+
+4. Install the needed [*requirements*](https://github.com/aahan0511/the2048game/blob/v1.0.0/requirements.txt "requirements.txt"), with: `pip install -r requirements.txt`.
+
+5. Run the [`__main__.py`](https://github.com/aahan0511/the2048game/blob/v1.0.0/__main__.py "__main__.py"), which starts the game.
 
 <br><br>
 <div align="center">
