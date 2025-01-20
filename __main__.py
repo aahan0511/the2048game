@@ -20,7 +20,8 @@ PATHS = {
     "JetBrainsMono-Medium.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Medium.ttf",
     "JetBrainsMono-Bold.ttf" : DIRECTORY+"\\assets\\fonts\\JetBrainsMono-Bold.ttf",
     "how to play.png" : DIRECTORY+"\\assets\\images\\how to play.png",
-    "info.png" : DIRECTORY+"\\assets\\images\\info.png"
+    "info.png" : DIRECTORY+"\\assets\\images\\info.png",
+    "license.png" : DIRECTORY+"\\assets\\images\\license.png"
 }
 SPEED = 5
 GROW_SPEED = 3.6
@@ -202,7 +203,7 @@ class App(CTk):
                 ongoing = True
 
         else:
-            pass #TODO: add settings function
+            root.more.license()
 
     def increase(root, increament: int) -> None:
         root.scoreVar.set(root.scoreVar.get()+increament)
@@ -302,6 +303,17 @@ class More(CTkFrame):
             )
         )
 
+        more.showingLicense = False
+        more.licenseLabel = CTkLabel(
+            more,
+            text="",
+            image=CTkImage(
+                Image.open(PATHS["license.png"]),
+                Image.open(PATHS["license.png"]),
+                (535, 630)
+            )
+        )
+
     def help(more) -> None:
         if pause:
             if not more.showingHelp:
@@ -344,6 +356,18 @@ class More(CTkFrame):
 
         more.helpLabel.place_forget()
         more.showingHelp = False
+
+        more.licenseLabel.place_forget()
+        more.showingLicense = False
+
+    def license(more) -> None:
+        if not more.showingLicense:
+            more.clear()
+            
+            more.licenseLabel.place(relx=0.5, rely=0.5, anchor="center")
+        else:
+            more.licenseLabel.place_forget()
+        more.showingLicense = not more.showingLicense
 
 class Leaderboard(CTkTabview):
 
@@ -589,7 +613,7 @@ class Side(CTkFrame):
 
         side.info = CTkButton(
             side, 
-            text="ℹ️", 
+            text="🪪", 
             fg_color="#faf8f0", 
             text_color="#988a86", 
             corner_radius=25,
@@ -622,7 +646,7 @@ class Side(CTkFrame):
         if not pause:
             side.more.show()
             side.help.configure(text="❔")
-            side.play.configure(text="⚙️")
+            side.play.configure(text="ℹ️")
             side.undo.configure(text="🌐")
             side.info.configure(text="🏅")
             side.end.configure(text="📂")
@@ -632,7 +656,7 @@ class Side(CTkFrame):
             side.help.configure(text="⭐")
             side.play.configure(text="🎮")
             side.undo.configure(text="🔙")
-            side.info.configure(text="ℹ️")
+            side.info.configure(text="🪪")
             side.end.configure(text="❌")
             side.moreButton.configure(text="✨")
         pause = not pause
