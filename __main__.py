@@ -393,7 +393,7 @@ class Leaderboard(CTkTabview):
             case "block": filtr = 2
             case "name": filtr = 3
         if filtr == 0:
-            def toDate(total: str) -> None:
+            def toDate(total: str) -> datetime:
                 item = total[0].split(" ")
                 date = item[0].split("-")
                 time = item[1].split(":")
@@ -411,9 +411,9 @@ class Leaderboard(CTkTabview):
         else:
             values = sorted(cursor.execute(f'SELECT * FROM Scores').fetchall(), key=lambda item: item[filtr], reverse=(True if filtr != 3 else False))
 
-        if (board.values != values or board.values == None or need) and board.size.get() != "":
+        if (board.values != values or board.values is None or need) and board.size.get() != "":
             try:
-                if board.values != None:
+                if board.values is not None:
                     for tab in range(1, board.length+1):
                         board.delete(str(tab))
             except ValueError: pass
