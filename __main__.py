@@ -205,8 +205,8 @@ class App(CTk):
         else:
             root.more.license()
 
-    def increase(root, increament: int) -> None:
-        root.scoreVar.set(root.scoreVar.get()+increament)
+    def increase(root, increment: int) -> None:
+        root.scoreVar.set(root.scoreVar.get() + increment)
 
     def undo(root) -> None:
         global grid, matrix
