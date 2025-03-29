@@ -86,7 +86,7 @@ the2048game is licensed under the [**MIT License**](https://github.com/aahan0511
 Thanks to [JetBrains](https://github.com/JetBrains "JetBrains on GitHub"), for providing the [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) font.
 
 ## Python Modules
-Thanks to on the [modules](https://github.com/aahan0511/the2048game/requirements.txt) on which Othello is built on.
+Thanks to on the [modules](https://github.com/aahan0511/the2048game/requirements.txt) on which the2048game is built on.
 
 ## Original Game
 Thanks to **Gabriele Cirulli** who is an Italian freelance programmer, who also developed the game as a *weekend project*.
@@ -110,7 +110,7 @@ Follow the [CONTRIBUTING.md](https://github.com/aahan0511/the2048game/blob/main/
 
 </div>
 
-Othello has the [**Contributor Covenant Code of Conduct**](https://github.com/aahan0511/the2048game/blob/main/.github/CODE_OF_CONDUCT.md "Code Of Conduct for the2048game").
+the2048game has the [**Contributor Covenant Code of Conduct**](https://github.com/aahan0511/the2048game/blob/main/.github/CODE_OF_CONDUCT.md "Code Of Conduct for the2048game").
 
 <br><br>
 <div align="center">
@@ -119,4 +119,4 @@ Othello has the [**Contributor Covenant Code of Conduct**](https://github.com/aa
 
 </div>
 
-To view the security and data safety of Othello, see [`SECURITY.md`](https://github.com/aahan0511/the2048game/blob/main/.github/SECURITY.md "Security on the2048game").
+To view the security and data safety of the2048game, see [`SECURITY.md`](https://github.com/aahan0511/the2048game/blob/main/.github/SECURITY.md "Security on the2048game").
