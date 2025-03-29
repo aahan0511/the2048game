@@ -27,7 +27,7 @@ SPEED = 5
 GROW_SPEED = 3.6
 TABLE_LEN = 20
 
-SCREEN_FACTOR = 0.87 # Recommended 0.75 to 1
+SCREEN_FACTOR = 1 # Recommended 0.75 to 1
 
 grid = [None]*16
 matrix = [0]*16
