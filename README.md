@@ -46,6 +46,7 @@
 
 > [!IMPORTANT]
 > You can change the `SCREEN_FACTOR` in `__main__.py` to increase or decrease the app's size but it is still in preview. The app may crash.
+> Best to set it to `1` when not sure about it.
 
 <br><br>
 <div align="center">
