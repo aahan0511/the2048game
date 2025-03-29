@@ -44,6 +44,9 @@
 > [!IMPORTANT]
 > **the2048game** is currently only for windows, it may work for other operating systems after some changes, but it may not work as intended.
 
+> [!IMPORTANT]
+> You can change the `SCREEN_FACTOR` in `__main__.py` to increase or decrease the app's size but it is still in preview. The app may crash.
+
 <br><br>
 <div align="center">
 
