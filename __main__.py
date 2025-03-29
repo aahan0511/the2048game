@@ -27,6 +27,8 @@ SPEED = 5
 GROW_SPEED = 3.6
 TABLE_LEN = 20
 
+SCREEN_FACTOR = 0.87 # Recommended 0.75 to 1
+
 grid = [None]*16
 matrix = [0]*16
 ongoing = False
@@ -50,7 +52,7 @@ class App(CTk):
 
     def __init__(root) -> None:
         super().__init__("#faf8f0")
-        root.geometry("715x700+50+50")
+        root.geometry(f"{int(715*SCREEN_FACTOR)}x{int(700*SCREEN_FACTOR)}+{int(50*SCREEN_FACTOR)}+{int(50*SCREEN_FACTOR)}")
         root.resizable(False, False)
 
         root.bind("<Any-KeyPress>", root.keyPress)
@@ -71,7 +73,7 @@ class App(CTk):
 
         root.scoreVar = IntVar(value=0)
         root.highVar = IntVar(value=cursor.execute(f'''SELECT MAX(Score) FROM Scores''').fetchone()[0])
-        icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((80, 80)))
+        icon = ImageTk.PhotoImage(Image.open(PATHS["icon"]).resize((int(80*SCREEN_FACTOR), int(80*SCREEN_FACTOR))))
 
         root.more = More(master=root)
         root.header = Header(
@@ -224,8 +226,8 @@ class App(CTk):
                     if cell != 0:
                         temp = Block(root.game)
                         temp.power = cell
-                        temp.x = (idx%4)*136.25+73.125
-                        temp.y = (idx//4)*136.25+73.125
+                        temp.x = ((idx%4)*136.25+73.125)*SCREEN_FACTOR
+                        temp.y = ((idx//4)*136.25+73.125)*SCREEN_FACTOR
                         temp.pos = idx
                         temp.set()
                         temp.place()
@@ -249,11 +251,11 @@ class More(CTkFrame):
         super().__init__(
             master,
             border_color="#9c8978",
-            border_width=5,
+            border_width=5*SCREEN_FACTOR,
             fg_color="#bdac97",
-            height=670,
-            width=555,
-            corner_radius=35
+            height=670*SCREEN_FACTOR,
+            width=555*SCREEN_FACTOR,
+            corner_radius=35*SCREEN_FACTOR
         )
         more.grid_propagate(False)
 
@@ -299,7 +301,7 @@ class More(CTkFrame):
             image=CTkImage(
                 Image.open(PATHS["how to play.png"]),
                 Image.open(PATHS["how to play.png"]),
-                (535, 630)
+                (535*SCREEN_FACTOR, 630*SCREEN_FACTOR)
             )
         )
 
@@ -310,7 +312,7 @@ class More(CTkFrame):
             image=CTkImage(
                 Image.open(PATHS["license.png"]),
                 Image.open(PATHS["license.png"]),
-                (535, 630)
+                (535*SCREEN_FACTOR, 630*SCREEN_FACTOR)
             )
         )
 
@@ -331,8 +333,8 @@ class More(CTkFrame):
         if not more.showingLeader: 
             more.clear()
 
-            more.leaderFilter.grid(row=1, column=0, sticky="e", padx=5)
-            more.leaderSize.grid(row=1, column=1, sticky="w", padx=5)
+            more.leaderFilter.grid(row=1, column=0, sticky="e", padx=5*SCREEN_FACTOR)
+            more.leaderSize.grid(row=1, column=1, sticky="w", padx=5*SCREEN_FACTOR)
             more.leaderboard.show()
         else: 
             more.leaderFilter.grid_forget()
@@ -341,7 +343,7 @@ class More(CTkFrame):
         more.showingLeader = not more.showingLeader
 
     def show(more) -> None:
-        more.place(x=415, y=342, anchor="center")
+        more.place(x=415*SCREEN_FACTOR, y=342*SCREEN_FACTOR, anchor="center")
         more.lift()
 
     def hide(more) -> None:
@@ -459,8 +461,8 @@ class Header(CTkFrame):
             border_color="#9c8978",
             border_width=5,
             corner_radius=35,
-            width=555, 
-            height=100, 
+            width=555*SCREEN_FACTOR, 
+            height=100*SCREEN_FACTOR, 
         )
 
         header.rowconfigure(0, weight=1, uniform="a")
@@ -486,12 +488,13 @@ class Header(CTkFrame):
             var=highVar
         )
 
-        header.place(x=415, y=60, anchor="center")
+        header.place(x=415*SCREEN_FACTOR, y=60*SCREEN_FACTOR, anchor="center")
 
 class NamePlate(CTkFrame):
 
     def __init__(nameplate, master: Header, icon: ImageTk.PhotoImage) -> None:
-        super().__init__(master, fg_color="transparent")
+        super().__init__(master, fg_color="transparent", bg_color="red")
+        set_opacity(nameplate, color="red")
 
         nameplate.logo = CTkCanvas(
             nameplate,
@@ -499,21 +502,21 @@ class NamePlate(CTkFrame):
             highlightthickness=0, 
             relief="ridge",
             background="#bdac97",
-            width=80, 
-            height=80
+            width=80*SCREEN_FACTOR, 
+            height=80*SCREEN_FACTOR
         )
-        nameplate.logo.create_image(40, 40, image=icon, anchor="center")
+        nameplate.logo.create_image(40*SCREEN_FACTOR, 40*SCREEN_FACTOR, image=icon, anchor="center")
         nameplate.logo.place(relx=0.2, rely=0.5, anchor="center")
 
         nameplate.name = CTkLabel(
             nameplate,
             text_color="#756452",
             text="2048",
-            font=("JetBrains Mono Medium", 50, "bold")
+            font=("JetBrains Mono Medium", 50*SCREEN_FACTOR, "bold")
         )
         nameplate.name.place(relx=0.6, rely=0.5, anchor="center")
 
-        nameplate.grid(row=0, column=0, sticky="nsew", padx=10, pady=19)
+        nameplate.grid(row=0, column=0, sticky="nsew", padx=10*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
 class Score(CTkFrame):
 
@@ -523,18 +526,19 @@ class Score(CTkFrame):
             corner_radius=25,
             fg_color=color,
             border_color="#eae7d9",
-            border_width=3,
+            border_width=3*SCREEN_FACTOR,
         )
 
-        score.label = CTkLabel(score, text=description, font=("JetBrains Mono Medium", 13), text_color="#988a86")
+        score.label = CTkLabel(score, text=description, font=("JetBrains Mono Medium", 13*SCREEN_FACTOR), text_color="#988a86")
         score.label.place(relx=0.5, rely=0, anchor="n")
 
         set_opacity(score.label, color=color)
 
-        score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=("JetBrains Mono Medium", 20))
+        score.number = CTkLabel(score, textvariable=var, text_color="#988a86", font=("JetBrains Mono Medium", 20*SCREEN_FACTOR), fg_color="#988a87")
         score.number.place(relx=0.5, rely=0.6, anchor="center")
+        set_opacity(score.number, color="#988a87")
 
-        score.grid(row=0, column=pos, sticky="nsew", padx=15, pady=19)
+        score.grid(row=0, column=pos, sticky="nsew", padx=15*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
 class Side(CTkFrame):
 
@@ -543,15 +547,15 @@ class Side(CTkFrame):
             master,
             fg_color="#bdac97",
             border_color="#9c8978",
-            border_width=5,
+            border_width=5*SCREEN_FACTOR,
             corner_radius=35,
-            width=100, 
-            height=670, 
+            width=100*SCREEN_FACTOR, 
+            height=670*SCREEN_FACTOR, 
         )
 
         side.columnconfigure(0, weight=1, uniform="a")
-        side.rowconfigure((0, 1, 3, 4, 5, 6), weight=100, uniform="a")
-        side.rowconfigure((2), weight=70, uniform="a")
+        side.rowconfigure((0, 1, 3, 4, 5, 6), weight=10, uniform="a")
+        side.rowconfigure((2), weight=7, uniform="a")
         side.grid_propagate(False)
 
         side.moreButton = CTkButton(
@@ -562,11 +566,11 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=side.click
         )
-        side.moreButton.grid(column=0, row=0, sticky="nsew", padx=19, pady=19)
+        side.moreButton.grid(column=0, row=0, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
         side.more = more
 
         side.help = CTkButton(
@@ -577,11 +581,11 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=more.help
         )
-        side.help.grid(column=0, row=1, sticky="nsew", padx=19, pady=19)
+        side.help.grid(column=0, row=1, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
         side.play = CTkButton(
             side, 
@@ -591,11 +595,11 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=master.play
         )
-        side.play.grid(column=0, row=3, sticky="nsew", padx=19, pady=19)
+        side.play.grid(column=0, row=3, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
         side.undo = CTkButton(
             side, 
@@ -605,11 +609,11 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=master.undo
         )
-        side.undo.grid(column=0, row=4, sticky="nsew", padx=19, pady=19)
+        side.undo.grid(column=0, row=4, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
         side.info = CTkButton(
             side, 
@@ -619,11 +623,11 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=master.game.info
         )
-        side.info.grid(column=0, row=5, sticky="nsew", padx=19, pady=19)
+        side.info.grid(column=0, row=5, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
         side.end = CTkButton(
             side, 
@@ -633,13 +637,13 @@ class Side(CTkFrame):
             corner_radius=25,
             hover_color="#eae7d9",
             border_color="#eae7d9",
-            border_width=3,
-            font=("JetBrains Mono Medium", 28),
+            border_width=3*SCREEN_FACTOR,
+            font=("JetBrains Mono Medium", 28*SCREEN_FACTOR*0.9),
             command=master.end
         )
-        side.end.grid(column=0, row=6, sticky="nsew", padx=19, pady=19)
+        side.end.grid(column=0, row=6, sticky="nsew", padx=19*SCREEN_FACTOR, pady=19*SCREEN_FACTOR)
 
-        side.place(x=72.5, y=342, anchor="center")
+        side.place(x=72.5*SCREEN_FACTOR, y=342*SCREEN_FACTOR, anchor="center")
 
     def click(side) -> None:
         global pause
@@ -668,8 +672,8 @@ class GameScreen(CTkFrame):
             master,
             fg_color="#9b8878",
             corner_radius=35,
-            width=555, 
-            height=555, 
+            width=555*SCREEN_FACTOR, 
+            height=555*SCREEN_FACTOR, 
         )
 
         screen.rowconfigure((0, 1, 2, 3), weight=1, uniform="a")
@@ -686,15 +690,15 @@ class GameScreen(CTkFrame):
                     text="",
                     fg_color="#bdac97",
                     corner_radius=35,
-                    width=116.25,
-                    height=116.25
+                    width=116.25*SCREEN_FACTOR,
+                    height=116.25*SCREEN_FACTOR
                 ).place(
                     anchor="center", 
-                    x=136.25*column+73.125,
-                    y=136.25*row+73.125
+                    x=(136.25*column+73.125)*SCREEN_FACTOR,
+                    y=(136.25*row+73.125)*SCREEN_FACTOR
                 )
 
-        screen.place(x=415, y=400, anchor="center")
+        screen.place(x=415*SCREEN_FACTOR, y=400*SCREEN_FACTOR, anchor="center")
 
     def win(screen) -> None:
         if not showingLoss:
@@ -724,7 +728,7 @@ class Info(CTkToplevel):
         super().__init__(master, fg_color="#bdac97")
         top.title("the2048game | Info")
 
-        top.geometry("425x600")
+        top.geometry(f"{425*SCREEN_FACTOR}x{600*SCREEN_FACTOR}")
         top.resizable(False, False)
         top.after(200, lambda: top.iconbitmap(PATHS["empty"]))
         
@@ -738,7 +742,7 @@ class Info(CTkToplevel):
             image=CTkImage(
                 Image.open(PATHS["info.png"]),
                 Image.open(PATHS["info.png"]),
-                (423, 600)
+                (423*SCREEN_FACTOR, 600*SCREEN_FACTOR)
             )
         )
         top.image.pack(expand=True, fill="both")
@@ -759,7 +763,7 @@ class Notification(CTkFrame):
 
             text = CTkLabel(
                 notifier,
-                font=("JetBrains Mono Medium", 100),
+                font=("JetBrains Mono Medium", 100*SCREEN_FACTOR),
                 text="You Win!",
                 text_color="#888888"
             )
@@ -767,7 +771,7 @@ class Notification(CTkFrame):
 
             subtext = CTkLabel(
                 notifier,
-                font=("JetBrains Mono Medium", 20),
+                font=("JetBrains Mono Medium", 20*SCREEN_FACTOR),
                 text="Click to Continue",
                 text_color="#888888"
             )
@@ -790,7 +794,7 @@ class Notification(CTkFrame):
 
             text = CTkLabel(
                 notifier,
-                font=("JetBrains Mono Medium", 100),
+                font=("JetBrains Mono Medium", 100*SCREEN_FACTOR),
                 text="You Lose!",
                 text_color="#ffffff"
             )
@@ -798,7 +802,7 @@ class Notification(CTkFrame):
 
             subtext = CTkLabel(
                 notifier,
-                font=("JetBrains Mono Medium", 20),
+                font=("JetBrains Mono Medium", 20*SCREEN_FACTOR),
                 text="Press ❌ to Continue",
                 text_color="#ffffff"
             )
@@ -826,7 +830,7 @@ class Block:
             textvariable=block.var, 
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=("JetBrains Mono Bold", 28 if block.power <= 13 else 24),
+            font=("JetBrains Mono Bold", 28*SCREEN_FACTOR if block.power <= 13 else 24*SCREEN_FACTOR),
             justify="center", 
             anchor="center",
             width=1,
@@ -840,8 +844,8 @@ class Block:
         block.pos = randint(0, 15)
         while matrix[block.pos] != 0: 
             block.pos = randint(0, 15)
-        block.x = (block.pos%4)*136.25+73.125
-        block.y = (block.pos//4)*136.25+73.125
+        block.x = ((block.pos%4)*136.25+73.125)*SCREEN_FACTOR
+        block.y = ((block.pos//4)*136.25+73.125)*SCREEN_FACTOR
 
     def place(block) -> None:
         block.cell.place(
@@ -850,7 +854,7 @@ class Block:
             anchor="center"
         )
         def grow(side):
-            block.cell.configure(width=116.25-side, height=116.25-side, justify="center", anchor="center", corner_radius=35)
+            block.cell.configure(width=116.25*SCREEN_FACTOR-side, height=116.25*SCREEN_FACTOR-side, justify="center", anchor="center", corner_radius=35)
             if side > 0:
                 block.cell.after(1, lambda: grow(side-GROW_SPEED if side>=GROW_SPEED else 0))
                 block.cell.lift()
@@ -858,7 +862,7 @@ class Block:
                     block.cell.after(1, block.master.loseNotifier.lift)
                 if showingWin:
                     block.cell.after(1, block.master.winNotifier.lift)
-        grow(116.25)
+        grow(116.25*SCREEN_FACTOR)
         matrix[block.pos] = block.power
         grid[block.pos] = block 
 
@@ -873,15 +877,15 @@ class Block:
         block.cell.configure(
             fg_color=COLORS[block.power] if block.power <= 11 else COLORS[-1], 
             text_color="#ffffff" if block.power > 2 else "#756452", 
-            font=("JetBrains Mono Bold", 28 if block.power <= 13 else 24)
+            font=("JetBrains Mono Bold", 28*SCREEN_FACTOR if block.power <= 13 else 24*SCREEN_FACTOR)
         )
         grid[block.pos] = block
         matrix[block.pos] = block.power
 
     def slide(block, pos: int) -> None:
         block.cell.place(
-            x=(pos%4)*136.25+73.125,
-            y=(pos//4)*136.25+73.125,
+            x=((pos%4)*136.25+73.125)*SCREEN_FACTOR,
+            y=((pos//4)*136.25+73.125)*SCREEN_FACTOR,
             anchor="center"
         ) #TODO: add slide function
 
