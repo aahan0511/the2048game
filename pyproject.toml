@@ -1,0 +1,13 @@
+[project]
+name = "the2048game"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ctktable>=1.1",
+    "customtkinter>=5.2.2",
+    "pillow>=11.3.0",
+    "pyglet>=2.1.8",
+    "pywinstyles>=1.8",
+]
