@@ -1,5 +1,5 @@
 CTkTable==1.1
 customtkinter==5.2.2
 pillow==11.3.0
-pyglet==2.1.8
+pyglet==2.1.9
 pywinstyles==1.8
